@@ -1,14 +1,9 @@
 <?php
-/*
-	Author: [ChinaWin]
-*/
 require 'common.inc.php';
-
 // if($action != 'mobile') {
 // 	check_referer() or exit;
 // }
 require DT_ROOT.'/include/post.func.php';
-
 
 if(empty($ac) || empty($func)){
 	$res['msg'] = '请求来路错误!';
