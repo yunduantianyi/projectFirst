@@ -1,0 +1,167 @@
+<div class="content-show">
+	<input type="hidden" name="userid" value="{$_userid}">
+	<div class="show" style="width:98%;margin:0 auto;">
+	{if $my_goods}
+	{loop $my_goods $v}
+
+		<div class="session-box" id="{$v[id]}" onclick="$.Log(this)">
+
+		    <div class="session-content">
+				<div class="content-top">
+					<div class="left">{if get_goods($v[gid],'fromtype') == 1}<em style="color:#f90">(内部)</em>{else}<em style="color:#5bc0de">(外部)</em>{/if}{$v['title']} (#{$v[id]})</div>
+					<div class="right">  
+						{if $v[status] == 1}
+						<span style='color:#f60'>可领用</span>
+						{elseif $v[status] == 2}
+						<em class="float_give_2">申请中</em>
+						{elseif $v[status] == 3}
+						<em class="float_give_3">使用中</em>
+						{elseif $v[status] == 4}
+						<em class="float_give_4">转让中</em>
+						{elseif $v[status] == 6}
+						<em class="float_give_6">归还中</em>
+						{elseif $v[status] == 8}
+						<span style="color:#f90">维修中</span>
+						{elseif $v[status] == 9}
+						<span style="color:#ccc">已报废</span>
+						{/if}
+					</div>
+				</div>
+				<div class="content-middle">
+					<div class="content-middle-left">
+						<div class="middle-left-desc">
+
+							<span><i>领用者</i><i>{get_user($v[userid],'name')}</i></span>
+							<span><i>编号</i><i>{if $v[bianhao]}{$v[bianhao]}{else}—{/if}</i></span>
+						</div>
+						<div class="middle-left-desc">
+
+							<span><i>型号</i><i>{if $v[xinghao]}{$v[xinghao]}{else}—{/if}</i></span>
+							<span><i>内存</i><i>{if $v[neicun]}{$v[neicun]}{else}—{/if}</i></span>
+						</div>
+						
+						<div class="middle-left-desc">
+							<!-- <span><i>启用时间</i><i>{if $v[usingtime]}{$v[usingtime]}{else}—{/if}</i></span> -->
+
+							<span><i>申请时间</i><i>{if $v[starttime]}{timetodate($v[starttime], 0)}{else}—{/if}</i></span>
+	
+							{if $v[is_con] == 1}
+							<span><i>领用数量</i><i style="color:#f60;font-weight: bold;">{$v[num]}</i></span>
+							{/if}
+							
+						</div>
+				
+
+						{if $v[status] == 4}
+							<div class="middle-left-desc">
+
+							<span><i>转让给</i><i>{get_user($v[need_userid],'name')}</i></span>
+							<span><i>转让时间</i><i>{timetodate($v[needtime] ,0)}</i></span>
+						</div>
+
+						{elseif $v[status]==5}
+							<div class="middle-left-desc">
+
+							<span><i>请求者</i><i>{get_user($v[need_userid],'name')}</i></span>
+							<span><i>请求时间</i><i>{timetodate($v[needtime] ,0)}</i></span>
+
+						{/if}
+						{if $v[status] == 2}
+						<div class="middle-left-note">
+							<i>审批人</i><i style="color:#46b8da;">{get_user($v[manager],'name')}</i>
+						</div>
+						{/if}
+
+
+						{if $v[note]}
+						<div class="middle-left-note">
+							<i>物品备注</i><i>{$v[note]}</i>
+						</div>
+						{/if}
+						
+						{if ($v[status] == 2) || ($v[status] == 3)}
+						<div class="middle-left-note">
+							<i>申请备注</i><i class="edit_note">{$v[note_use]}</i>
+						</div>
+						{elseif $v[status] == 4}
+						<div class="middle-left-note">
+							<i>转让备注</i><i class="edit_note">{$v[note_need]}</i>
+						</div>
+						{elseif $v[status] == 6}
+						<div class="middle-left-note">
+							<i>归还备注</i><i class="edit_note">{$v[note_return]}</i>
+						</div>
+						{/if}
+					
+					</div>
+					
+					
+				</div>
+
+		    </div>
+		    <div class="clear"></div>
+		</div>
+	{/loop}
+	{/if}
+	</div>
+	<div class="edit-bottom-kongbai">
+	
+	</div>
+
+<script>
+$(function(){
+	var $height = $(window).height()-85;
+	$(".content-show").css({"height":$height});
+
+
+	var rot="";
+	$('.ss_toggle').on('click', function (ev) {
+		var menu = $(this).closest('.ss_menu');
+	    rot = parseInt($(this).data('rot')) - 180;
+	    menu.css('transform', 'rotate(' + rot + 'deg)');
+	    menu.css('webkitTransform', 'rotate(' + rot + 'deg)');
+	    if (rot / 180 % 2 == 0) {
+	        $(this).parent().addClass('ss_active');
+	        $(this).addClass('close');
+	    } else {
+	        $(this).parent().removeClass('ss_active');
+	        $(this).removeClass('close');
+	    }
+	    $(this).data('rot', rot);
+
+	    menu.on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+	        if (rot / 180 % 2 == 0) {
+	        	menu.find("div i").addClass('ss_animate');
+	        } else {
+	        	menu.find("div i").removeClass('ss_animate');
+	        }
+	    });
+
+	});
+
+
+	$(".goods_return").click(function(){
+		var id = "";
+		$(".session-box").each(function(){
+			if( $(this).find(".session-content").hasClass("session-current") ){
+				id = $(this).find("input[name='id']").val();
+				return;
+			}
+		});
+		console.log(id);
+		if( id ){
+			$("#id_"+id).fadeOut();
+			$("#id_"+id).find(".session-content").removeClass("session-current");
+
+		}else{
+			layer.open({
+			    content: '请点击选中物品！'
+			    ,skin: 'msg'
+			    ,time: 1
+			});
+		}
+	});
+
+
+})
+</script>

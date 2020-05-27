@@ -1,0 +1,313 @@
+{template 'header'}
+
+<div class="content" style="overflow:scroll">
+<input type="hidden" name="fromtype" value="{$fromtype}">
+  	<div class="scroll">
+		<!--只作为传递一行，隐藏table-->
+	  	<table class="none-table">   
+		  	<tbody>
+				<tr>
+					<td onclick="$.Change_checked(this)">
+						<span class="class_none"></span>
+						<input type="hidden" name="id" value="">
+					</td>
+					<td style="position: relative;"> 
+						<input type="text" name="title" value="" class="form-control">
+						<span class="class_addnew"></span>
+					</td>
+					<td onchange="$.Change_asc(this)"><input type="text" name="asc" value="" class="form-control w-80"></td>
+					<td>
+						<input type="hidden" name="manager" value="0225163314939996">
+						<a href="javascript:;" class='btn btn-info btn-sm' onclick="$.Change_Manager(this)">{get_user('0225163314939996','name')}</a>
+					</td>
+				</tr>
+		  	</tbody>
+	  	</table>
+		
+		<form action="" id="form">
+
+		
+  		<table class="class_table"  >
+			<thead>
+				<tr>
+					<th style="width:15%"></th>
+					<th style="width:40%">分类名称 {if $fromtype == 1}(内部物品分类管理){else}(外部物品分类管理){/if}</th>
+					<th style="width:25%">
+						分类排序 <a href="javascript:;" style="padding:1px 0" class="btn btn-warning btn-xs class_clear_asc">清空排序</a>
+
+					</th>
+					<th style="width: 20%">
+						负责人
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{loop $class $v}
+				<tr>
+					<td onclick="$.Change_checked(this)">
+						<span class="class_none"></span>
+						<input type="hidden" name="id" value="{$v[id]}">
+					</td>
+					<td> 
+						<input type="text" name="title" value="{$v[title]}" class="form-control">
+					</td>
+					<td onchange="$.Change_asc(this)"><input type="number"  name="asc" value="{$v[asc]}" class="form-control w-80"></td>
+					
+					<td>
+						<input type="hidden" name="manager" value="{$v[manager]}">
+						<a href="javascript:;" class='btn btn-info btn-sm' onclick="$.Change_Manager(this)">{get_user($v['manager'],'name')}</a>
+					</td>
+				</tr>
+				{/loop}
+
+			</tbody>
+		</table>
+		</form>
+
+
+
+		<div class="edit-bottom-kongbai"></div>
+  	</div>
+
+	
+</div>
+
+
+<div class="do_class_manage" style="border-top:1px solid #ccc">
+	<i href="javascript:;" class="class_add" >添加</i>
+	<i href="javascript:;" class="class_del" >删除选中</i>
+	<i href="javascript:;" class="class_confirm">确认编辑</i>
+	<a class="qiehuan" href="{if $fromtype == 1}page.php?ac=edit&func=class_manage&fromtype=2{else}page.php?ac=edit&func=class_manage&fromtype=1{/if}" >{if $fromtype == 1}切换外部{else}切换内部{/if}</a>
+	
+</div>
+
+<!-- 
+      <i><a href="javascript:;" class="class_add">添加<br/>分类</a></i>
+    </div>
+    <div>
+      <i><a href="javascript:;" class="class_del">删除<br/>选中</a></i>
+    </div>
+    <div>
+      <i><a href="javascript:;" class="class_confirm">确认<br/>编辑</a></i>
+    </div>
+
+ -->
+
+{template 'footer'}
+
+
+<script>
+$(function(){
+
+$(".class_del").click(function(){
+	var $lis = $(".class_table tbody tr");
+	var id = '';
+	var count = 0;
+	$lis.each(function(){
+		if( $(this).find("td:first-child").find("span").hasClass("class_checked") ){
+			if( $(this).find("td:first-child ").find("input[name='id']").val() ){
+				id += $(this).find("td:first-child ").find("input[name='id']").val()+',';
+			}
+			count += 1;
+		}
+	})
+
+	if( count == 0 ){
+		  layer.open({
+		    content: '请勾选分类！'
+		    ,skin: 'msg'
+		    ,time: 1.5  //1.5秒后自动关闭
+		  });
+		return false;
+	}
+
+	console.log(id+"||"+count);
+
+	if( id ){   //id存在  那么就是选中了数据库中（不是新添加的行）
+		id = id.substring(0,id.length-1);
+		$.post(DTPath+'ajax.php', {"ac": "Edit", "func": "class_del","id":id,"type":0}, function( data ){
+				var o = eval("("+data+")");
+				console.log(o.code);
+				console.log(o.msg);
+
+	      		// layer.open({type: 2});
+	      			
+	      		if( o.code == 1 ){
+		      		layer.open({
+					    content: o.msg
+					    ,btn: ['我知道了']
+					    ,skin: 'footer'
+					    ,yes: function(index){
+							layer.close(index);    //取消
+					    }
+					});
+	      		}else if( o.code == 2 ){
+	      			layer.open({
+					    content: o.msg
+					    ,btn: ['确认删除','取消']
+					    ,skin: 'footer'
+					    ,yes: function(index){
+
+						    $.post(DTPath+'ajax.php', {"ac": "Edit", "func": "class_del","id":id,"type":1}, function( data ){
+									var o = eval("("+data+")");
+									if( o.code == 1 ){
+										console.log(o);
+										$lis.each(function(){
+											if( $(this).find("td:first-child").find("span").hasClass("class_checked") ){
+												$(this).remove();
+												
+											}
+										})
+
+
+									}else{
+
+									}
+							});
+							layer.close(index);    //取消
+					    }
+					});
+	      		}
+		});
+	}else{
+      	layer.open({   //无id  删除新添加
+		    content: '是否删除新添加分类？'
+		    ,btn: ['确认删除']
+		    ,skin: 'footer'
+		    ,yes: function(index){
+		    	$lis.each(function(){
+					if( $(this).find("td:first-child").find("span").hasClass("class_checked") ){
+						$(this).remove();
+					}
+				});
+				layer.close(index);    //取消
+		    }
+		});
+
+	}
+
+
+
+	
+
+})
+
+$(".class_add").click(function(){
+	var insertHtml = $('.none-table tbody').html();
+	 // console.log(insertHtml);
+	$(".class_table tbody").append(insertHtml);
+
+	//选中需要添加的最后一行   不知道手机端会怎样 ？？？
+	// $(".class_table tbody").find("tr:last").find("input[name='title']").focus();
+
+
+})
+
+
+$(".class_clear_asc").click(function(){
+	var fromtype = $("input[name='fromtype']").val();
+	layer.open({
+    content: '<span style="color:#f60">是否清除排序？</span>'
+    ,btn: ['立即清除','取消']
+    ,skin: 'footer'
+    ,yes: function(index){
+      // layer.open({content: '执行删除操作'});
+	    $.post(DTPath+'ajax.php', {"ac": "Edit", "func": "class_clear_asc","fromtype":fromtype}, function( data ){
+				var o = eval("("+data+")");
+				// console.log(o.code);
+				// console.log(o.msg);
+	      		layer.open({type: 2});
+	      		window.location.reload();
+
+
+		});
+      
+      // layer.open({type: 2});
+      layer.close(index);
+      
+
+    }
+  });
+
+})
+$(".class_confirm").click(function(){
+	var fromtype = $("input[name='fromtype']").val();
+	var $arr = $("#form").serializeArray();
+	console.log($arr);
+	// return false;
+	$.post(DTPath+'ajax.php', {"ac": "Edit", "func": "class_confirm","arr":$arr,"type":0,"fromtype":fromtype}, function( data ){
+			var o = eval("("+data+")");
+			if( o.code == 1 ){
+				// console.log(o);
+				layer.open({
+				    content: o.msg
+				    ,btn: ['确定编辑','取消']
+				    ,skin: 'footer'
+				    ,yes: function(index){
+				     
+					$.post(DTPath+'ajax.php', {"ac": "Edit", "func": "class_confirm","arr":$arr,"type":1,"fromtype":fromtype}, function( data ){
+							var o = eval("("+data+")");
+							if( o.code == 1 ){
+								layer.open({type: 2});
+				      			window.location.reload();
+
+							}else{  //未知错误
+								layer.open({
+								    content: '添加分类出错，请联系开发人员！'
+								    ,skin: 'msg'
+								    ,time: 2  //1.5秒后自动关闭
+								  });
+								window.setTimeout(function () {
+		                       		window.location.reload();
+		                   		}, 2000);
+							}
+					});	
+				      layer.close(index);
+				    }
+				});
+			}else{
+				layer.open({
+				    content: o.msg
+				    ,btn: ['我知道了']
+				    ,skin: 'footer'
+				    ,yes: function(index){
+						layer.close(index);    //取消
+				    }
+				});
+			}
+
+	});
+
+
+})
+
+$.Change_checked = function(obj){
+
+	if( $(obj).find("span").attr("class") == 'class_none' ){
+		$(obj).find("span").removeClass("class_none");
+		$(obj).find("span").addClass("class_checked");
+	}else{
+		$(obj).find("span").removeClass("class_checked");
+		$(obj).find("span").addClass("class_none");
+
+	}
+}
+
+$.Change_asc = function(obj){   //需要再看看
+	var val = $(obj).find("input[name='asc']").val();
+	// console.log(val);
+	if(isNaN(val)){
+	  $(obj).find("input[name='asc']").val("");
+	  // $(obj).find("input[name='asc']").focus();
+	}	
+	
+
+
+}
+
+
+
+
+
+})
+</script>

@@ -1,0 +1,257 @@
+{template 'header'}
+<link rel="stylesheet" type="text/css" href="{DT_SKIN}member/show.css">
+
+<script type="text/javascript" src="file/script/member/crousel.js"></script>
+
+
+
+<script type="text/javascript" src="file/script/member/jquery.touchSlider.js"></script>
+
+<script type="text/javascript" src="file/script/member/jquery.flexslider.js"></script>
+
+<script>
+$(document).ready(function(){
+	$dragBln = false;
+	
+	$(".img-show").touchSlider({
+		flexible : true,
+		speed : 200,
+		btn_prev : $("#btn_prev"),
+		btn_next : $("#btn_next"),
+	});
+	
+	$(".img-show").bind("mousedown", function() {
+		$dragBln = false;
+	});
+	
+	$(".img-show").bind("dragstart", function() {
+		$dragBln = true;
+	});
+	
+	$(".img-show a").click(function(){
+		if($dragBln) {
+			return false;
+		}
+	});
+	
+	timer = setInterval(function(){
+		$("#btn_next").click();
+	}, 5000);	
+	
+	$(".img-show").bind("touchstart",function(){
+		clearInterval(timer);
+	}).bind("touchend", function(){
+		timer = setInterval(function(){
+			$("#btn_next").click();
+		}, 5000);
+	});
+	var type = '{$type}';
+	if( type ){
+
+		// layer.confirm('啊啊啊啊', {
+		//   btn: ['前往主页','留在此也'] //按钮
+		// }, function(){
+		//   layer.msg('啊啊啊', {icon: 1});
+		// }, function(){
+		//   layer.close();
+		// });
+
+
+	}
+
+	
+});
+</script>
+</head>
+<body class="layout-center">
+<input type="text" value="{$forward}">
+<div id="body" class="container">
+	<div class="banner-wp">
+		<img src="{DT_SKIN}images/member/main_1.png" alt="">
+	</div>
+	<div class="wgt-report container">
+		<div class="img-title"></div>
+		<div class="cnt-box">
+			<div class="cnt clearfix">
+				<div class="img-border">
+					<div class="img-show">
+						<ul>
+							<li><img src="{DT_SKIN}images/member/11.png" width="600" height="380" alt=""></li>				
+
+							<li><img src="{DT_SKIN}images/member/22.png" width="600" height="380" alt=""></li>
+							<li><img src="{DT_SKIN}images/member/33.png" width="600" height="380" alt=""></li>
+							<li><img src="{DT_SKIN}images/member/44.png" width="600" height="380" alt=""></li>
+						</ul>
+						<a href="javascript:;" id="btn_prev"></a>
+						<a href="javascript:;" id="btn_next"></a>
+
+					</div>
+				</div>
+				<div class="txt-show">
+					<ul>
+						<li>							
+							<strong>2017</strong><span>1/1</span>						
+							<p>
+								淘布网将在中国国际纺织面料和辅料<br/>（秋冬）博览会大放异彩
+							</p>
+						</li>
+						<li>
+							<strong>2017</strong><span>1/1</span>					
+							<p>
+								2016上海秋冬面料展会，淘布网小编现场实时报导
+							</p>
+						</li>
+						<li>
+							<strong>2017</strong><span>1/1</span>					
+							<p>
+								盛况空前！淘布网强势出击<br/>intertextile秋冬面辅料展
+							</p>
+						</li>
+						<li>
+							<strong>2017</strong><span>1/1</span>					
+							<p>
+								intertextile秋冬面辅料展圆满落幕<br/>淘布网订单火爆 满载而归
+							</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="wgt-interview container">
+		<div class="img-title"></div>
+		<div class="btnMode" id="slider">
+			<a href="javascript:void(0);" class="prev btn"></a>
+			<div class="scroll">	
+				<ul class="scrollContainer">
+					<li class="panel" id="panel_1">
+						<a href="#" class="inside" >
+							<img alt="这是第一个" src="{DT_SKIN}images/member/c1.jpg" />
+							<span>这是第一个</span>
+						</a>
+					</li>
+					<li class="panel" id="panel_2">
+						<a href="#" class="inside" >
+							<img alt="这是第二个" src="{DT_SKIN}images/member/c2.jpg" />
+							<span>这是第二个</span>
+						</a>
+					</li>
+					<li class="panel" id="panel_3">
+						<a href="#" class="inside" >
+							<img alt="这是第三个" src="{DT_SKIN}images/member/c3.jpg" />
+							<span>这是第三个</span>
+						</a>
+					</li>
+					<li class="panel current" id="panel_4">
+						<a href="#" class="inside" >
+							<img alt="这是第四个" src="{DT_SKIN}images/member/c4.jpg" />
+							<span>这是第四个</span>
+						</a>
+					</li>
+					<li class="panel current" id="panel_5">
+						<a href="#" class="inside" >
+							<img alt="这是第五个" src="{DT_SKIN}images/member/c5.jpg" />
+							<span>这是第五个</span>
+						</a>
+					</li>
+					<li class="panel current" id="panel_6">
+						<a href="#" class="inside" >
+							<img alt="这是第六个" src="{DT_SKIN}images/member/c6.jpg" />
+							<span>这是第六个</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<a href="javascript:void(0);" class="next btn"></a>     
+		</div>
+	</div>
+	<!-- <div class="wgt-scene container">
+		<div class="img-title"></div>
+		<div class="cnt-box">
+			<div class="img-showtime">
+				<ul >
+					<li><img src="img/xianchang/5.png" alt=""></li>
+					<li></li>
+
+				</ul>
+			</div>
+		</div>
+	</div> -->
+
+
+	<div class="wgt-scene container">
+		<div class="img-title"></div>
+		<div class="cnt-box">
+			<div class="img-showtime">
+				<div class="holder" style="">
+                    <!-- 主体部分 -->
+                    <div id="wowslider-container">
+                        <div class="ws_images">
+                            <ul>
+                                <li>
+                                    <a href="" target="_blank">
+                                        <img src="{DT_SKIN}images/member/b1.png" alt="123" title="111" />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="" target="_blank">
+                                        <img src="{DT_SKIN}images/member/b2.png" alt="456" title="222" />
+                                    </a>
+                            
+                                </li>
+                                <li>
+                                    <a href="" target="_blank">
+                                        <img src="{DT_SKIN}images/member/b3.png" alt="789" title="333" />
+                                    </a>
+                             
+                                </li>
+                                
+                            </ul>
+                        </div>
+                        <div class="ws_bullets">
+                            <div>
+                                <a href="#">
+                                    <img src="{DT_SKIN}images/member/d1.png" alt="CSS3 Slider" />
+                                </a>
+                                <a href="#">
+                                    <img src="{DT_SKIN}images/member/d2.png" alt="CSS Slideshow" />
+                                </a>
+                                <a href="#">
+                                    <img src="{DT_SKIN}images/member/d3.png" alt="CSS Gallery" />
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/javascript" src="file/script/member/wowslider.js">
+                    </script>
+                    <script type="text/javascript" src="file/script/member/script.js">
+                    </script>
+                    <!-- 主体部分. -->
+                </div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="wgt-enterprise container">
+		<div class="img-title"></div>
+		<div class="eps-box">
+			<ul class="clearfix cooper-company">
+				<a href="" target="_blank"><li></li></a>
+				<a href="" target="_blank"><li></li></a>
+				<a href="" target="_blank"><li></li></a>
+				<a href="" target="_blank"><li></li></a>
+				<a href="" target="_blank"><li></li></a>
+				<a href="" target="_blank"><li></li></a>
+				
+			</ul>
+		</div>
+	</div>
+
+</div>
+</body>
+</html>

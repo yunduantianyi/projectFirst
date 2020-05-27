@@ -1,0 +1,269 @@
+<style>
+.layui-m-layerbtn span, .layui-m-layerchild h3{
+/*white-space:normal;	*/
+}
+
+</style>
+<div class="ajax_show_log"  style="height:{$height}px;overflow: scroll;">
+	<div>
+		<input type="hidden" name="id" value="{$my[id]}">
+		<input type="hidden" name="status" value="{$my[status]}">
+
+
+		<div class="top_status">
+			{if get_user($my[userid],'avatar')}
+		
+			<img src="{get_user($my[userid],'avatar')}" alt="" class="my_avatar">
+			{else}
+				<div class="top_status_left">
+				{if $my[userid]}
+					{getNickName(get_user($my[userid],'name'))}
+				{else}
+					管理
+				{/if}
+				</div>
+
+			{/if}
+			
+
+			<div class="top_status_right">
+				<i>
+					{if $my[status] == 2}
+						<em style="color:#f90">等待管理员处理中</em>
+					{elseif $my[status] == 3 }
+						<em style="color:#f60">{get_user($my[userid], 'name')} 使用中</em>
+					{elseif $my[status] == 4 }
+						<em style="color:#2BACFF">{get_user($my[userid], 'name')} 转让给 {get_user($my[need_userid], 'name')}</em>
+					{elseif $my[status] == 6}
+						<em style="color:#2BACFF">{get_user($my[userid], 'name')} 归还了物品,等待管理员处理</em>
+					{elseif $my[status] == 7}
+						<em style="color:#999">{get_user($my[userid], 'name')} 已将物品归还客户</em>
+					{elseif $my[status] == 8}
+						<em style="color:#f30">{get_user($my[userid], 'name')} 设为正在维修中</em>
+					{elseif $my[status] == 9}
+						<em style="color:#888">物品已报废</em>
+					
+					{/if}
+				</i>
+
+			</div>
+		</div>
+
+		<div class="middle_content">
+			<span>
+				<i>所属分类</i>
+				<i>{if get_goods($my[gid],'fromtype') == 1}<em style="color:#f90">(内部)</em>{else}<em style="color:#5bc0de">(外部)</em>{/if}  {get_wp_class(get_goods($my[gid],'cid'), 'title')}</i>
+			</span>
+			<span>
+				<i>编号</i>
+				<i>{if $my[bianhao]}{$my[bianhao]}{else}-{/if}</i>
+			</span>
+			<span>
+				<i>型号</i>
+				<i>{if $my[xinghao]}{$my[xinghao]}{else}-{/if}</i>
+			</span>
+			<span>
+				<i>内存</i>
+				<i>{if $my[neicun]}{$my[neicun]}{else}-{/if}</i>
+			</span>
+			<span>
+				<i>版本</i>
+				<i>{if $my[banben]}{$my[banben]}{else}-{/if}</i>
+			</span>
+			<span>
+				<i>系统</i>
+				<i>{if $my[xitong]}{$my[xitong]}{else}-{/if}</i>
+			</span>
+			<span>
+				<i>启用时间</i>
+				<i>{if $my[usingtime]}{$my[usingtime]}{else}-{/if}</i>
+			</span>
+
+
+			{if $my[is_con]}
+			<span>
+				<i>领用数量</i>
+				<i style="color:#f60;font-weight: bold;">{$my[num]}</i>
+			</span>
+			{/if}
+
+			<span>
+				<i>物品备注</i>
+				<i>{$my[note]}</i>
+			</span>
+			{if $my[status] == 2}
+			<span>
+				<i>申请备注</i>
+				<i>{if $my[note_use]}{$my[note_use]}{else}—{/if}</i>
+			</span>
+			{/if}
+			{if ($my[status] == 4 || $my[status] == 5)}
+			<span>
+				<i>转让备注</i>
+				<i>{if $my[note_need]}{$my[note_need]}{else}—{/if}</i>
+			</span>
+			{/if}
+			{if $my[status] == 6}
+			<span>
+				<i>归还备注</i>
+				<i>{if $my[note_return]}{$my[note_return]}{else}—{/if}</i>
+			</span>
+			{/if}
+		</div>
+		<div class="devider b-line"></div>
+			<div class="select_tips" style="display:none;width:92%;height:25px;font-size: 12px;color:#f60;">
+			</div>
+			<input type="hidden" class="selectUserId" value="">
+			
+			<textarea name="note" style="{if isMobile()}width:92%{else}width:92%{/if};{if !$type}display: none;{/if}" class="note form-control" placeholder="请填写操作备注"></textarea>
+		
+		<div class="devider b-line">
+		
+		</div>
+
+
+	</div>
+	<div class="middle_bottom">
+		{loop $log $v}
+		<div class="log">
+			<span>
+			{if get_user($v[userid],'avatar')}
+				<img src="{get_user($v[userid],'avatar')}" alt="" class="my_avatar" style="width: 30px;height: 30px">
+				
+			{else}
+				{getNickName(get_user($v[userid],'name'))}
+			{/if}
+
+			</span>
+			<span style="width:{$width}px;">
+				{if $v[status] == 1}
+					{get_user($v[userid],'name')} 入库该物品
+				{elseif $v[status] == 13}
+					{get_user($v[userid],'name')} 入库分派给 {get_user($v[need_userid],'name')} 使用
+				{elseif $v[status] == 2}
+					{get_user($v[userid],'name')} 申请领用
+				{elseif $v[status] == 22}
+					{get_user($v[userid],'name')} 撤回领用申请
+				{elseif $v[status] == 21}
+					{get_user($v[userid],'name')} <b>同意了</b> {get_user($v[need_userid],'name')} 的申请
+				{elseif $v[status] == 20}
+					{get_user($v[userid],'name')} <b>驳回了</b> {get_user($v[need_userid],'name')} 的申请
+				
+				{elseif $v[status] == 4}
+					{get_user($v[userid],'name')} <b>转让给</b> {get_user($v[need_userid],'name')}
+				{elseif $v[status] == 42}
+					{get_user($v[userid],'name')} <b>撤销转让</b>给 {get_user($v[need_userid],'name')}
+				{elseif $v[status] == 41}
+					{get_user($v[need_userid],'name')} 确认转让并接收
+				{elseif $v[status] == 40}
+					{get_user($v[need_userid],'name')} 拒绝接收转让
+				
+				{elseif $v[status] == 6}
+					{get_user($v[userid],'name')} <b>归还了</b>物品
+			
+				{elseif $v[status] == 61}
+					{get_user($v[userid],'name')} 将物品重新放回物品库
+				{elseif $v[status] == 62}
+					{get_user($v[userid],'name')} <b>撤回了</b>归还物品申请
+					
+				{elseif $v[status] == 60}
+					{get_user($v[userid],'name')} 将物品设置为<b style="color:#ccc">已报废</b>
+				
+				{elseif $v[status] == 7}
+					{get_user($v[userid],'name')} 将物品设置为<b style="color:#ccc">归还客户</b>
+
+				{elseif $v[status] == 8}
+					{get_user($v[userid],'name')} 将物品设为<b style="color:#f30">维修中</b>
+				{elseif $v[status] == 81}
+					{get_user($v[userid],'name')} <b style="color:#f30">完成维修</b>,重新放回物品库
+				{elseif $v[status] == 9}
+					{get_user($v[userid],'name')} 将物品设为<b style="color:#888">已报废</b>
+				{elseif $v[status] == 91}
+						{get_user($v[userid],'name')} <b style="color:#F60">请求借阅</b>图书
+				{elseif $v[status] == 0}
+					{get_user($v[userid],'name')} 对物品进行编辑
+				{/if}
+			</span>
+			<span>{timetodate($v[time], 5)}</span>
+		</div>
+		{if $v[note]}
+		<div class="log_note">{$v[note]}</div>
+		{/if}
+		<div class="log_line"></div>
+		
+		{/loop}
+
+	</div>
+
+
+{if $type=='apply'}
+
+	{if $my[status] == 2}
+	<div class="do_status_2">
+		<i onclick="$.Action_Confirm({$my[id]}, 'confirm', 'apply')">同意申请</i>
+		<i onclick="$.Action_Confirm({$my[id]}, 'cancel', 'apply')">驳回申请</i>
+	</div>
+	{elseif $my[status]==6}
+		{if get_goods($my[gid],'fromtype') == 1}
+			<div class="do_status_3">
+				<i onclick="$.Action_Confirm({$my[id]}, 'confirm', 'return')">继续入库</i>
+				<i onclick="$.Action_Confirm({$my[id]}, 'cancel', 'return')">报废回收</i>
+				<i onclick="$.Action_Confirm({$my[id]}, 'repair', 'repair')">前往维修</i>
+			</div>
+		{else}
+			<div class="do_status_4">
+				<i onclick="$.Action_Confirm({$my[id]}, 'confirm', 'return')">继续入库</i>
+				<i onclick="$.Action_Confirm({$my[id]}, 'cancel', 'return')">报废回收</i>
+				<i onclick="$.Action_Confirm({$my[id]}, 'back', 'return')">归还客户</i>
+				<i onclick="$.Action_Confirm({$my[id]}, 'repair', 'repair')">前往维修</i>
+			</div>
+		{/if}
+	{/if}
+
+
+{elseif $type == 'give'}
+	<div class="do_status_2">
+		{if $my[status]==4}
+			<i onclick="$.Action_Confirm({$my[id]}, 'confirm', 'give')">同意接收</i>
+			<i onclick="$.Action_Confirm({$my[id]}, 'cancel', 'give')">拒绝接收</i>
+		{elseif $my[status]==5}
+			<i onclick="$.Action_Confirm({$my[id]}, 'confirm', 'give')">同意转让</i>
+			<i onclick="$.Action_Confirm({$my[id]}, 'cancel', 'give')">拒绝转让</i>
+		{/if}
+	</div>
+{else}
+
+	{if $my[status] == 2}
+		<div class="do_status_2">
+			<i onclick="$.Cancel_Edit({$my[id]},this,'cancel','apply')">撤销申请</i>
+			<i onclick="$.Cancel_Edit({$my[id]},this,'edit','apply')">修改申请备注</i>
+		</div>
+	
+	{elseif $my[status]==4}
+		<div class="do_status_2">
+			<i onclick="$.Cancel_Edit({$my[id]},this,'cancel','give')">撤销转让</i>
+			<i onclick="$.Cancel_Edit({$my[id]},this,'edit','give')">修改转让备注</i>
+		</div>
+	{elseif $my[status]==6}
+		<div class="do_status_2">
+			<i onclick="$.Cancel_Edit({$my[id]},this,'cancel','return')">撤销归还</i>
+			<i onclick="$.Cancel_Edit({$my[id]},this,'edit','return')">修改归还备注</i>
+		</div>
+
+	{elseif $my[status] == 3 && $my[is_con] !=1}
+		<div class="do_status_2">
+			<i onclick="$.Return({$my[id]},this)">归还</i>
+			<i onclick="$.Give({$my[id]},this)">转让</i>
+		</div>
+	{/if}
+{/if}	
+	
+
+{if $my[status] == 8}
+<div class="do_status_1">
+	<i onclick="$.Action_Confirm({$my[id]}, 'repaired', 'repair')">维修完成,重新入库</i>
+</div>
+{/if}
+
+	<div class="edit-bottom-log"></div>
+</div>

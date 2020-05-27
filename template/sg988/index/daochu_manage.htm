@@ -1,0 +1,614 @@
+{template 'header'}
+<link rel="stylesheet" type="text/css" href="file/script/layui/css/layui.css">
+<script language="javascript" type="text/javascript" src="file/script/layui/layui.js"></script>
+
+<style>
+::-webkit-scrollbar    
+{    
+  display: block;
+} 
+::-webkit-scrollbar    
+{    
+    width: 10px;    
+    height: 10px;    
+    background-color: #F5F5F5;    
+}    
+    
+/*定义滚动条轨道 内阴影+圆角*/    
+::-webkit-scrollbar-track    
+{    
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);    
+    border-radius: 10px;    
+    background-color: #FFF;    
+}    
+    
+/*定义滑块 内阴影+圆角*/    
+::-webkit-scrollbar-thumb    
+{    
+    border-radius: 10px;    
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);    
+    background-color: #AAA;    
+}  
+
+
+.layui-form-checkbox[lay-skin=primary]:hover i{
+	border-color:#38ADFF;
+}
+.layui-form-checked[lay-skin=primary] i{
+	background-color:#38ADFF;
+}
+
+.layui-form-checkbox[lay-skin=primary] i{
+	top:4px;
+}
+.layui-form-checkbox[lay-skin=primary] span{
+	line-height: 25px;
+	padding-right: 10px;
+}
+
+.search_layui_input{
+	height: 25px;float: left;
+}
+
+.status .check_all{
+	line-height: 25px;padding:0 10px
+}
+.category_title{
+	width: 100%;height: 25px;
+	line-height: 25px;
+	float: left;
+	margin: 5px 0px;
+	font-size: 14px;
+	border-top:1px dashed #888;
+}
+
+.daochu_js_class i{
+	display: block;
+	float: left;
+	padding:5px 8px;
+	border-radius: 5px;
+	margin:5px 5px;
+	
+	font-size: 13px;
+	cursor: pointer;
+	background: #38ADFF;
+	color:#fff;
+}
+.daochu_js_class .no_add{
+	background: #ccc;
+}
+</style>
+
+
+<div class="content" style="overflow: scroll;">
+<form action="" class="layui-form">
+	<div class="daochu_title"> 	
+		{if !isMobile()}
+		导出报表
+		<div class="daochu_btn">
+			<a href="javascript:;" onclick="$.Daochu_Category()" class="btn btn-info">分类报表</a>
+			<a href="javascript:;" onclick="$.Daochu_Goods()" class="btn btn-danger">导出当前物品报表</a>
+		</div>
+		{else}
+			报表查询(<span style="color:#BBB">钉钉客户端-导出报表</span>)
+		{/if}
+
+	</div>
+	<div class="daochu_search_content">
+		<input type="hidden" name="isAdmin" value="{$USER[isAdmin]}">
+		<div class="search">
+			<i class="i1">
+				分类物品：
+				
+			</i>
+			<a href="javascript:;" class="btn btn-primary btn-xs category_close" style="display: none">收起分类</a>
+			<a href="javascript:;" class="btn btn-primary btn-xs category_open">展开分类选项</a>
+			<i class="i2 search_category" style="display: none">
+			
+				{loop $class $v}
+				<div class="category_title">
+					{if $v[goods]}<a  href="javascript:;" class="btn btn-info btn-xs checkbox-category">全选</a>{/if}
+					{if $v[fromtype] == 1}<em style="color:#f90">(内部)</em>{else}<em style="color:#5bc0de">(外部)</em>{/if}{$v[title]}
+				</div>
+				<div class="category_goods">
+					{loop $v[goods] $gv}
+						<div class="search_layui_input">
+							<input type="checkbox" name="category[]" value="{$gv[id]}" lay-skin="primary" title="{$gv[title]}">
+						</div>
+					
+					{/loop}
+				</div>
+				{/loop}
+				
+			</i>	
+
+		</div>
+		<div class="search" style="cursor: pointer;" onclick="$.Get_Userid('daochu',this)">
+			<i class="i1">使用者：</i>
+			<i style="color:#f60">点击选择(若无反应,右上角刷新)</i>
+			<i class="i2 search_userid">
+			
+			<!-- 	<em onclick="$.U_Cancel(this)" attr-userid="manager8335"  attr-name="戚凌云" ><div><span>凌云</span></div><div>戚凌云</div></em>
+				<em onclick="$.U_Cancel(this)" attr-userid="156522682525037700"  attr-name="戚测试" ><div><span>测试</span></div><div>戚测试</div></em>
+				 -->
+				
+			</i>
+		</div>
+
+		<div class="search">
+			<i class="i1">物品状态：</i>
+			<i class="i2 status">
+				<div class="search_layui_input check_all">
+					<a  href="javascript:;" class="btn btn-info btn-xs checkbox-status">全选</a>
+				</div>
+
+				<div class="search_layui_input">
+					<input type="checkbox" name="status[]" value="1" lay-skin="primary" title="可领用">
+				</div>
+
+				<div class="search_layui_input">
+					<input type="checkbox" name="status[]" value="2" lay-skin="primary" title="申请领用中">
+				</div>
+
+				<div class="search_layui_input">
+					<input type="checkbox" name="status[]" value="3,4,6" lay-skin="primary" title="使用中(包含转让中、归还中)">
+				</div>
+
+				<div class="search_layui_input">
+					<input type="checkbox" name="status[]" value="8" lay-skin="primary" title="维修中">
+				</div>
+				<div class="search_layui_input">
+					<input type="checkbox" name="status[]" value="9" lay-skin="primary" title="已报废">
+				</div>
+
+				<div class="search_layui_input">
+					<input type="checkbox" name="status[]" value="7" lay-skin="primary" title="归还客户(外部)">
+				</div>
+				
+			</i>
+		</div>
+
+
+		{if !isMobile()}
+		<div class="search" style="width: 31%">
+			<i class="i1">领用时间：</i>
+			<i class="i2" style="width:230px;">
+			  	<div class="layui-inline">
+			        <input type="text" class="layui-input form-control" readonly="" name="starttime" value="" placeholder=" 领用时间范围 ">
+			    </div>
+			</i>
+		</div>
+		<div class="search" style="width: 31%">
+			<i class="i1">启用时间：</i>
+			<i class="i2" style="width:230px;">
+			  	<div class="layui-inline">
+			        <input type="text" class="layui-input form-control" readonly="" name="usingtime" value="" placeholder=" 启用时间范围 ">
+			    </div>
+			</i>
+		</div>
+
+		<div class="search" style="width: 32%">
+			<i class="i1">入库时间：</i>
+			<i class="i2"  style="width:230px;">
+			   	<div class="layui-inline">
+			        <input type="text" class="layui-input form-control" readonly="" name="edittime" value="" placeholder=" 入库时间范围 ">
+			    </div>
+			</i>
+		</div>
+		{/if}
+
+
+		<div class="search">
+			<i class="i1">相关<b>关键词</b>：</i>
+			<i class="i2"><input type="text" name="keywords" value="" class="form-control" placeholder="查询 名称,编号,型号,内存,版本,系统,备注 等相关关键词"></i>
+		</div>
+		<div class="search_bottom">
+			<a href="javascript:;" class="reload" style="background:#38ADFF;color:#fff; ">查询</a>
+			<a href="{DT_PATH}page.php?from=index&ac=index&func=daochu_manage">清空</a>
+		</div>
+	</div>
+	
+
+	<div class="daochu_content" >
+		<!-- {if $USER[isAdmin]}
+		<div class="layui-btn-group demoTable">
+		  <a javascript:; class="layui-btn layui-btn-danger del_info">删除选中物品</a>
+		  <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
+		  <button class="layui-btn" data-type="isAll">验证是否全选</button>
+		</div>
+		{/if} -->
+		 
+		
+
+		<table class="layui-table" id="test" style="overflow-x: auto;">
+		
+		</table>
+
+		
+
+		<script type="text/html" class="barEdit">
+		 
+		  <!-- <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a> -->
+		  {if $USER[isAdmin]}
+		  	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+		   	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+		   
+		  {else}
+			<a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
+		  {/if}
+		</script>
+
+	</div>
+<!-- {template 'footer'} -->
+<!-- <a href="javascript:;" class="btn btn-danger" onclick="$.Kanban()">kanban</a>
+<a href="javascript:;" class="btn btn-danger" onclick="$.A()">1111</a>
+<a href="javascript:;" class="btn btn-danger" onclick="$.B()">222</a> -->
+</form>
+<script>
+$(function(){
+	
+	$.U_Cancel = function(obj){
+		event.stopPropagation();  //阻止冒泡
+		$(obj).fadeOut();
+	}
+
+	$(".category_open").click(function(){
+		$(".search_category").fadeIn();
+		$(".category_close").fadeIn();
+		$(this).fadeOut();
+	})
+
+	$(".category_close").click(function(){
+		$(".search_category").fadeOut();
+		$(".category_open").fadeIn();
+		$(this).fadeOut();
+	})
+
+
+
+	$.Kanban = function(){
+		layer.open({
+	        type: 2 //此处以iframe举例
+	        ,title: false
+	        ,area: ['100%', '100%']
+	        ,shade: 0
+	        ,maxmin: true
+	        ,offset: [ //为了演示，随机坐标
+	         0,0
+	        ] 
+	        ,content: DTPath+'page.php?ac=index&func=kanban'
+		       
+	    });
+	}
+
+
+	$.A = function(){
+		 elem=document.body;
+	    if(elem.webkitRequestFullScreen){
+	        elem.webkitRequestFullScreen();   
+	    }else if(elem.mozRequestFullScreen){
+	        elem.mozRequestFullScreen();
+	    }else if(elem.requestFullScreen){
+	        elem.requestFullscreen();
+	    }else{
+	        //浏览器不支持全屏API或已被禁用
+	    }
+	}
+	$.B = function(){
+		var elem=document;
+	    if(elem.webkitCancelFullScreen){
+	        elem.webkitCancelFullScreen();    
+	    }else if(elem.mozCancelFullScreen){
+	        elem.mozCancelFullScreen();
+	    }else if(elem.cancelFullScreen){
+	        elem.cancelFullScreen();
+	    }else if(elem.exitFullscreen){
+	        elem.exitFullscreen();
+	    }else{
+	        //浏览器不支持全屏API或已被禁用
+    }
+	}
+
+
+
+
+})
+
+
+
+
+layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'element', 'form'], function(){
+  var laydate = layui.laydate //日期
+  ,laypage = layui.laypage //分页
+  layer = layui.layer //弹层
+  ,table = layui.table //表格
+  ,carousel = layui.carousel //轮播
+  ,upload = layui.upload //上传
+  ,element = layui.element //元素操作
+  ,form    =  layui.form;
+  
+  laydate.render({
+    elem: "input[name='starttime']"
+    ,range: true
+  });
+ //日期范围
+  laydate.render({
+    elem: "input[name='usingtime']"
+    ,range: true
+  });
+    //日期范围
+  laydate.render({
+    elem: "input[name='edittime']"
+    ,range: true
+  });
+
+
+  
+
+
+
+$('.checkbox-status').click(function(){   //status 状态改变
+	if( $(this).html() == '全选' ){
+		$(".status input[type='checkbox']").prop("checked", true);
+		$(this).html("全不选");
+
+	}else{
+		$(".status input[type='checkbox']").prop("checked", false);
+		$(this).html("全选");
+	}
+	// $(".status input[type='checkbox']").prop("checked", function(index, attr){
+	// 	console.log(index+"||"+attr);
+	// 	return !attr;
+	// });
+	form.render('checkbox');
+});
+
+$('.checkbox-category').click(function(){   //status 状态改变
+
+	if( $(this).html() == '全选' ){
+		$(this).parent().next().find("input[type='checkbox']").prop("checked", true);
+		$(this).html("全不选");
+
+	}else{
+		$(this).parent().next().find("input[type='checkbox']").prop("checked", false);
+		$(this).html("全选");
+	}
+	form.render('checkbox');
+});
+
+
+  table.render({
+    elem: '#test'
+    ,url:DTPath+'ajax.php?ac=Index&func=ajax_find_info'
+    ,height:'full-200'
+    ,overflow:'auto'
+    ,page:true
+    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+    ,cols: [[
+      // {field:'id', width:80, title: 'ID', sort: true,fixed: 'left'}
+      // ,
+      {type:'checkbox', fixed: 'left'}
+      ,{field:'gid', width:100, title: '物品名称', sort: true,fixed: 'left'}
+      ,{field:'id', width:60, title: 'id', sort: true}
+      ,{field:'bianhao', width:90, title: '编号', sort: true}
+      ,{field:'xinghao', width:90, title: '型号'}
+      ,{field:'neicun', title: '内存',width:80, minWidth: 100} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+      ,{field:'banben', title: '版本', width:80}
+      ,{field:'xitong', title: '系统',width:80}
+      ,{field:'note', title: '备注',width:180}
+      ,{field:'note_use', title: '领用备注',width:180}
+      ,{field:'userid', title: '使用人', align:'center',width:100}
+      ,{field:'starttime', title: '领用时间',width:150,align:'center',sort: true}
+      ,{field:'usingtime', title: '启用时间',width:150,align:'center',sort: true}
+      ,{field:'edittime', title: '入库时间',width:150,align:'center',sort: true}
+      ,{field:'status', title: '状态',width:80,align:'center'}
+
+      ,{fixed: 'right',title: '编辑', width:100, align:'center', toolbar: '.barEdit'}
+    ]]
+    ,id: 'testReload'
+    // ,page: true
+  });
+
+  $('.reload').on('click', function(){
+  	var category="",userid="",name="",status="";
+
+  	$(".search_category").find("input[name='category[]']").each(function(){
+  		if( $(this).is(":checked") ){
+  			category += $(this).val()+",";
+  		}
+  	})
+
+  	$(".search_userid em").each(function(){
+  		if( $(this).is(":visible") ){
+  			userid += $(this).attr("attr-userid")+",";
+  			userid += $(this).attr("attr-name")+",";
+  		}
+  	})
+
+  	$(".status").find("input[name='status[]']").each(function(){
+  		if( $(this).is(":checked") ){
+  			status += $(this).val()+",";
+  		}
+  	})
+
+    table.reload('testReload', {
+	  where: { //设定异步数据接口的额外参数，任意设
+	  	category:category,  //分类id
+	  	userid:userid,     //用户id   userid为  userid和name集合
+	  	status:status,
+
+	  	starttime:$("input[name='starttime']").val(),
+	    usingtime: $("input[name='usingtime']").val(),
+	    edittime: $("input[name='edittime']").val(),
+	    keywords: $("input[name='keywords']").val()
+	   
+	  }
+	
+	});
+  });
+
+
+ table.on('tool()', function(obj){
+    var data = obj.data;
+    if(obj.event === 'detail'){
+      layer.msg('ID：'+ data.id + ' 的查看操作');
+    } else if(obj.event === 'del'){
+      layer.confirm('请确认是否删除(<b style="color:red">该操作直接将物品从数据库剔除</b>)', function(index){
+	        var query = new Object();
+	        query.ac = "Index";
+	        query.func = "daochu_edit";
+	        query.id = data.id;
+	        query.type = "del";
+	        $.ajax({
+				data: query,
+				type: "POST",
+				dataType: "json",
+				url: DTPath+'ajax.php',
+				success: function(res){
+					if( res.code == 1 ){
+						layer.msg("删除成功！");
+						 obj.del();
+					}else if(res.code == 2){
+						layer.msg(res.msg);
+						obj.del();
+					}else{
+						layer.msg(res.msg);
+					}
+				}
+			});
+
+
+	    });
+    } else if(obj.event === 'edit'){
+      // layer.alert('编辑行：<br>'+ JSON.stringify(data));
+      
+	 //    layer.open({
+		// 	type: 2,
+		// 	title: data.gid+"(#"+data.id+")",
+		// 	shadeClose: true,
+		// 	shade: 0.8,
+		// 	area: ['630px', '90%'],
+		// 	content: DTPath+'page.php?ac=index&func=ajax_daochu_edit&id='+data.id+"&type=edit" //iframe的url
+		// }); 
+
+
+		var query = new Object();
+		query.ac = 'Index';
+		query.func = 'ajax_daochu_edit';
+		query.id = data.id;
+		query.type = 'html';
+		$.ajax({
+			data: query,
+			type: "POST",
+			dataType: "json",
+			url: DTPath+'ajax.php',
+			success: function(res){
+				layer.open({
+			        type:1,
+			        title:"编辑 "+data.gid+" (#"+data.id+" )",
+			        btn:['确定','取消'],
+			        content:res.html,
+			        area:['630px','90%'],
+			        yes:function(index,layero){
+			            //获取input输入的值
+			            // var ivalue=$(layero).find("input").val();
+			            
+			            query.type = 'edit';
+			            query.gid = $(".daochu_edit select[name='gid']").children('option:selected').val();
+			            query.userid = $(".daochu_edit input[name='userid']").val();
+			            query.status = $(".daochu_edit select[name='status']").children('option:selected').val();
+			            query.bianhao = $(".daochu_edit input[name='bianhao']").val();
+			            query.xinghao = $(".daochu_edit input[name='xinghao']").val();
+			            query.neicun = $(".daochu_edit input[name='neicun']").val();
+			            query.banben = $(".daochu_edit input[name='banben']").val();
+			            query.xitong = $(".daochu_edit input[name='xitong']").val();
+			            query.note = $(".daochu_edit input[name='note']").val();
+			            query.note_use = $(".daochu_edit input[name='note_use']").val();
+
+			            $.ajax({
+							data: query,
+							type: "POST",
+							dataType: "json",
+							url: DTPath+'ajax.php',
+							success: function(info){
+								if(info.code == 1){
+									layer.closeAll();
+									layer.msg(info.msg);
+									  obj.update({
+								          gid: info.return.gid,
+								          userid: info.return.userid,
+								          bianhao: info.return.bianhao,
+								          xinghao: info.return.xinghao,
+								          neicun: info.return.neicun,
+								          banben: info.return.banben,
+								          xitong: info.return.xitong,
+								          note: info.return.note,
+								          note_use: info.return.note_use
+								          
+
+								        });
+
+								}else if( info.code == 2 ){
+									layer.msg(info.msg);
+								}
+							}
+						});
+
+
+
+			         
+
+			        
+			        }
+			    })
+			}
+		});
+
+    }
+  });	
+
+
+ $.Cancel_Userid = function(){
+  	event.stopPropagation();
+  	console.log("Asd");
+  	$(".userid_avatar,.userid_name1,.userid_name2,.userid_tips").remove();
+  	$("input[name='userid']").val("");
+}
+
+$.Change_Class = function(obj){
+	
+	var gid=$(obj).children('option:selected').val();//这就是selected的值  
+
+
+	var query = new Object();
+	query.ac = "Index";
+	query.func = "ajax_find_goods_info";
+	query.gid = gid;
+
+	$.ajax({
+		data: query,
+		type: "POST",
+		dataType: "json",
+		url: DTPath+'ajax.php',
+		success: function(data){
+			if( data.html ){
+				$(".daochu_edit").find("select[name='gid']").html(data.html);
+			}else{
+				$(".daochu_edit").find("select[name='gid']").html("");
+			}
+		}
+	});
+
+
+
+}
+
+
+function ajax_change_goods(){
+	console.log("asdasdasd");
+}
+
+
+ 
+});
+</script>

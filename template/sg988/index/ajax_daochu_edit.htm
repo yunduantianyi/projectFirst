@@ -1,0 +1,267 @@
+<style>
+
+::-webkit-scrollbar    
+{    
+  display: block;
+} 
+	.layui-form-label{
+		width:100px;
+		padding:9px 10px;
+	}
+	.layui-form-item{
+		margin-bottom: 0px;
+	}
+	.layui-input-block{
+		margin-left:100px;
+	}
+	.form-userid{
+		width:38px;height: 38px;
+		cursor: pointer;border-radius: 50%;
+		padding-left:0px;line-height: 38px;text-align: center;
+	}
+	.do_status_2{
+		height: 60px;
+	}
+	.do_status_2 i{
+		height: 40px;
+		line-height: 40px;
+		font-size: 15px;
+	}
+	.userid_name1{
+		width:36px;
+	    height:36px;
+	    background: #337ab7;
+	    color:#fff;
+	    line-height: 36px;
+	    font-size: 14px;
+	    border-radius: 50%;
+	    float: left;
+	    text-align: center;
+	}
+	.userid_name2{
+		height: 36px;
+		margin-left: 10px;
+		float: left;
+		line-height: 36px;
+	}
+	.userid_avatar{
+		 width: 36px;height: 36px;border-radius: 50%;float: left;display: block;
+	}
+	.userid_tips{
+		height: 36px;
+		margin-left: 10px;
+		float: left;
+		line-height: 36px;
+		color:#f60;
+	}
+	.layui-form select{
+		display: block;
+		cursor: pointer;
+
+		
+	}
+	.status_tips{
+		float: left;height:38px;line-height: 19px;
+		color:#666;
+	}
+</style>
+<div class="content daochu_edit" style="overflow:scroll">
+  	<div class="scroll">
+	<form class="layui-form" action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">分类选择</label>
+			<div class="layui-input-inline">
+			  <select name="class" lay-verify="required" lay-search="" class="layui-input" onchange="$.Change_Class(this)">
+			     
+			    {loop $class $v}
+			      <option value="{$v[id]}" {if $v[id] == get_goods($g[gid],'cid')}selected{/if}>{$v[title]}</option>
+			    {/loop}
+			    
+			    </select>
+			</div>
+			<div class="layui-input-inline">
+
+			  <select name="gid" lay-verify="required" lay-search="" class="layui-input">
+
+			  	{loop $goods $v}
+			      <option value="{$v[id]}" {if $v[id]==$g[gid]}selected{/if}>{$v[title]}</option>
+			    
+			    {/loop}
+			    </select>
+			</div>
+
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">当前使用者</label>
+				<input type="hidden" name="userid" value="{$g[userid]}">
+				<div class="layui-input-inline userid_content" style="cursor: pointer;height: 38px;" onclick="$.Get_Userid('edit',this)">
+					
+
+					{if get_user($g[userid],'avatar')}
+					<img src="{get_user($g[userid],'avatar')}" alt="" class="userid_avatar">
+					{else}
+						{if $g[userid]}
+						<div class="userid_name1">
+						
+							{getNickName(get_user($g[userid],'name'))}
+						
+						</div>
+						{/if}
+
+					{/if}
+					{if $g[userid]}
+					<div class="userid_name2">{get_user($g[userid],'name')} <i onclick="$.Cancel_Userid()" style="color:red">(清除使用者)</i> </div>
+					{/if}
+					<div class="userid_tips"></div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">物品状态</label>
+			<div class="layui-input-inline">
+				<select name="status" class="layui-input">
+					<option value="1" style="color:#f60" {if $g[status]==1}selected{/if}>可领用*</option>
+					<option value="2" {if $g[status]==2}selected{/if}>申请使用</option>
+					<option value="3" {if $g[status]==3}selected{/if}>使用中</option>
+					<option value="4" {if $g[status]==4}selected{/if}>转让中</option>
+					<option value="6" {if $g[status]==6}selected{/if}>使用者归还中</option>
+					<option value="7" style="color:#f60" {if $g[status]==7}selected{/if}>管理员归还客户*</option>
+					<option value="8" style="color:#f60" {if $g[status]==8}selected{/if}>设为维修中*</option>
+					<option value="9" style="color:#f60" {if $g[status]==9}selected{/if}>已报废*</option>
+
+				</select>
+			</div>
+			<div class="status_tips">
+				*状态选择 会将领用人,领用备注,日期清空<br>给成员设置物品,请对应选择上一步成员
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">编号</label>
+				<div class="layui-input-inline">
+					<input type="text" name="bianhao" value="{$g[bianhao]}" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">型号</label>
+				<div class="layui-input-inline">
+					<input type="text" name="xinghao" value="{$g[xinghao]}" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">内存</label>
+				<div class="layui-input-inline">
+					<input type="text" name="neicun" value="{$g[neicun]}" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">版本</label>
+				<div class="layui-input-inline">
+					<input type="text" name="banben" value="{$g[banben]}" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">系统</label>
+				<div class="layui-input-inline">
+					<input type="text" name="xitong" value="{$g[xitong]}" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-block">
+			<input type="text" name="note" autocomplete="off" value="{$g[note]}" placeholder="请输入备注(图书备注为书名！)" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">领用备注</label>
+			<div class="layui-input-block">
+			<input type="text" name="note_use" autocomplete="off" value="{$g[note_use]}" placeholder="领用备注" class="layui-input">
+			</div>
+		</div>
+		
+
+	</form>
+		<div class="middle_bottom" style="width: 90%;margin:0 auto">
+			{loop $log $v}
+			<div class="log">
+				<span>
+				{if get_user($v[userid],'avatar')}
+					<img src="{get_user($v[userid],'avatar')}" alt="" class="my_avatar" style="width: 30px;height: 30px">
+					
+				{else}
+					{getNickName(get_user($v[userid],'name'))}
+				{/if}
+
+				</span>
+				<span style="width:{$width}px;">
+					{if $v[status] == 1}
+						{get_user($v[userid],'name')} 入库该物品
+					{elseif $v[status] == 13}
+						{get_user($v[userid],'name')} 入库分派给 {get_user($v[need_userid],'name')} 使用
+					{elseif $v[status] == 2}
+						{get_user($v[userid],'name')} 申请领用
+					{elseif $v[status] == 22}
+						{get_user($v[userid],'name')} 撤回领用申请
+					{elseif $v[status] == 21}
+						{get_user($v[userid],'name')} <b>同意了</b> {get_user($v[need_userid],'name')} 的申请
+					{elseif $v[status] == 20}
+						{get_user($v[userid],'name')} <b>驳回了</b> {get_user($v[need_userid],'name')} 的申请
+					
+					{elseif $v[status] == 4}
+						{get_user($v[userid],'name')} <b>转让给</b> {get_user($v[need_userid],'name')}
+					{elseif $v[status] == 42}
+						{get_user($v[userid],'name')} <b>撤销转让给</b> {get_user($v[need_userid],'name')}
+					{elseif $v[status] == 41}
+						{get_user($v[need_userid],'name')} 确认转让并接收
+					{elseif $v[status] == 40}
+						{get_user($v[need_userid],'name')} 拒绝接收转让
+					
+					{elseif $v[status] == 6}
+						{get_user($v[userid],'name')} <b>归还了</b>物品
+				
+					{elseif $v[status] == 61}
+						{get_user($v[userid],'name')} 将物品重新放回物品库
+					{elseif $v[status] == 60}
+						{get_user($v[userid],'name')} 将物品设置为<b style="color:#ccc">已报废</b>
+					{elseif $v[status] == 62}
+						{get_user($v[userid],'name')} <b>撤回了</b>归还物品申请
+					
+					{elseif $v[status] == 7}
+						{get_user($v[userid],'name')} 将物品设置为<b style="color:#ccc">归还客户</b>
+
+					{elseif $v[status] == 8}
+						{get_user($v[userid],'name')} 将物品设为<b style="color:#f30">维修中</b>
+					{elseif $v[status] == 81}
+						{get_user($v[userid],'name')} <b style="color:#f30">完成维修</b>,重新放回物品库
+					{elseif $v[status] == 9}
+						{get_user($v[userid],'name')} 将物品设为<b style="color:#888">已报废</b>
+					{elseif $v[status] == 91}
+						{get_user($v[userid],'name')} <b style="color:#F60">请求借阅</b>图书
+					{elseif $v[status] == 0}
+						{get_user($v[userid],'name')} 对物品进行编辑
+					{/if}
+				</span>
+				<span>{timetodate($v[time], 5)}</span>
+			</div>
+			{if $v[note]}
+			<div class="log_note">{$v[note]}</div>
+			{/if}
+			<div class="log_line"></div>
+			
+			{/loop}
+
+		</div>
+	
+
+
+
+		<div class="edit-bottom-kongbai"></div>
+  	</div>
+
+	
+</div>

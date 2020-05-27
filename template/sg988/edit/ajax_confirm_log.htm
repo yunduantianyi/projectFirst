@@ -1,0 +1,66 @@
+
+<div class="ajax_confirm_log"  style="max-height:{$height}px;overflow: scroll;text-align: left;">
+	<input type="hidden" name="type" value="{$type}">
+	{loop $delHandler $k $v}
+	
+  	<div class="confirm_content">
+  		<input type="hidden" name="id" value="{$v[id]}">
+  		<input type="hidden" name='is_con' value="{$v[is_con]}">
+ 
+		<div class="confirm_content_top">
+			{$v[title]}
+		</div>
+		<div class="confirm_content_left">
+			<div class="left_desc">
+				{if $v[status] == 2}
+					<span><b>{get_user($v[userid],'name')}</b></span>
+					<span><b>申请时间：</b>{timetodate($v[starttime] ,0)}</span>
+				{elseif $v[status] == 4}
+
+					<span><b>{get_user($v[userid],'name')}</b></span>
+					<span><b>转让时间：</b>{timetodate($v[starttime] ,0)}</span>
+
+				{elseif $v[status] == 5}
+
+					<span><b>{get_user($v[need_userid],'name')}</b></span>
+					<span><b>请求时间：</b>{timetodate($v[starttime] ,0)}</span>
+
+				{/if}
+			</div>
+			
+			
+			{if $v['is_con'] ==0}
+			<div class="left_desc">
+				<b>物品编号：</b>{if $v[code]}{$v[code]}{else}——{/if}
+			</div>
+			<div class="left_desc">
+				<b>预计归还：</b>{if $v[returntime]}{timetodate($v['returntime'],0)}{else}<i>未申请归还时间</i>{/if}
+			</div>
+			{else}
+			<em class="confirm_content_con">消耗品</em>
+			{/if}
+			<div class="left_note">
+				<b>领用备注：</b> {$v[note_use]}
+			</div>
+
+			
+			
+		</div>
+		<div class="confirm_content_right">
+			<a href="javascript:;" class="btn btn-info btn-xs confirm_action" attr-action="confirm" >同意</a><br>
+			<a href="javascript:;" class="btn btn-danger btn-xs confirm_action" attr-action="cancel">驳回</a>
+			
+		
+		</div>
+		
+
+  	</div>
+	{/loop}
+
+
+
+	<div class="edit-bottom-log"></div>
+</div>
+
+
+

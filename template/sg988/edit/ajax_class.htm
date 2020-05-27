@@ -1,0 +1,52 @@
+{template 'ajax_header'}
+<div class="ajax_class ">
+	<form class="layui-form" action="">
+		<table>
+			<thead>
+				<tr>
+					<th><input type="checkbox" name="" title="发呆">  </th>
+					<th><input type="checkbox" name="" title="发呆" lay-skin="primary"> </th>
+					<th><input type="checkbox" name="" title="发呆" lay-skin="primary"> </th>
+					<th>1111</th>
+				</tr>
+			</thead>
+	
+
+
+		</table>
+
+
+
+		
+
+
+
+
+	</form>
+</div>
+<a href="javascript:;" class="aaa btn btn-danger">1111</a>
+
+
+<script>
+//Demo
+
+// layui.use('form', function(){
+//   var form = layui.form;
+ 
+// });
+
+$(".aaa").click(function(){
+	 layer.open({
+    content: '是否删除该条分类？'
+    ,btn: ['确认删除', '取消']
+    ,skin: 'footer'
+    ,yes: function(index){
+      // layer.open({content: '执行删除操作'})
+      layer.open({type: 2});
+    }
+  });
+
+})
+
+</script>
+{template 'ajax_footer'}

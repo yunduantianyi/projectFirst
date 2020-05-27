@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta name="renderer" content="webkit">
+    
+
+    <title>{$title}</title>
+
+
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="{DT_PATH}favicon.ico"/> -->
+    <!-- <link rel="bookmark" type="image/x-icon" href="{DT_PATH}favicon.ico"/> -->
+
+
+    <link href="{DT_SKIN}bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="{DT_SKIN}bootstrap-reset.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{DT_SKIN}style.css">
+    <link rel="stylesheet" href="{DT_SKIN}index.css">
+  
+
+   
+   <!--  <link rel="stylesheet" type="text/css" href="{DT_SKIN}Layui/layui/css/layui.css">
+    <script language="javascript" type="text/javascript" src="{DT_SKIN}Layui/layui/layui.js"></script> -->
+
+
+    <script src="file/script/config.js"></script>  <!--config 配置文件-->
+
+    <script src="file/script/jquery.min.js?v=2.1.4"></script>
+    <!-- <script src="file/script/layer/layer.js"></script> -->
+    <script src="file/script/jquery.js"></script>
+    <script src="file/script/bootstrap.min.js"></script>
+
+    <script src="file/script/base.js"></script>
+    <script src="file/script/layer/laydate/laydate.js"></script>
+    <!-- <script src="file/script/layer/extend/layer.ext.js"></script> -->
+
+    <script src="file/script/index.js"></script>   <!--测试写js-->
+    
+    <script src="file/script/layer-mobile.js"></script>
+
+    {if isMobile()}
+    <script src="file/script/dingtalk.js" charset="utf-8"></script>
+    <script src="file/script/app.js" charset="utf-8"></script>
+    {else}
+    <script src="file/script/dingtalkPC.js" charset="utf-8"></script>
+    <script src="file/script/appPC.js" charset="utf-8"></script>
+    {/if}
+
+
+</head>      
+                 
+
+<body class="android" style="overflow:auto;">
+
+    
+

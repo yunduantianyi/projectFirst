@@ -1,0 +1,64 @@
+{template 'header'}
+<!-- <script src="file/script/layer/layer.js"></script> -->
+
+<style>
+h1{
+  margin-top:0px;
+  margin-bottom: 0px;
+}
+</style>
+<div class="show_goods">
+<input type="hidden" name="ac_top" value="{$ac}">
+<input type="hidden" name="func_top" value="{$func}">
+
+<div class="content" style="overflow:auto">
+    <div class="scroll-content">
+        <div class="scroll">
+         
+            
+            <input type="hidden" name="isAdmin" value="{$USER[isAdmin]}">
+            <input type="hidden" name="fromtype" value="{$fromtype}">
+            <input type="hidden" name="isMobile" value="{$isMobile}">
+            {loop $class $v}
+            <div class="aui-item-aoi-che">
+                <div class=" btn-ss" style="position: relative;">
+                    <div class="b-line">
+                        <h1>{$v[title]}</h1>
+                    </div>
+                    <div class="goods_manager" >
+                       审批：{get_user($v[manager],'name')}
+                    </div>
+                </div>
+                {if $v[goods]}
+                <ul>
+                {loop $v[goods] $gv}
+                    <li attr-click="0" onclick="$.Index_Click(this)"  class="longClick" id="{$gv[id]}" attr-con="{$gv[is_con]}">
+
+                      <span>{$gv[title]}</span><span {if $gv[num]==0}class="edit-none"{/if}>{$gv[num]}</span>
+                      {if $gv['is_con'] == 1}<em class="goods_is_con">消耗</em>{/if}
+                    </li>
+                {/loop}
+                </ul>
+                {else}
+                  <div class="class_no_goods">该分类下没有物品！</div>
+
+                {/if}
+
+
+            </div>
+            {/loop}
+
+		      <div class="edit-bottom-kongbai"></div>
+	
+
+        </div>
+    </div>
+</div>
+
+</div>
+{template 'footer'}
+<script>
+
+
+
+</script>

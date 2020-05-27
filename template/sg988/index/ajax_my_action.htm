@@ -1,0 +1,185 @@
+<div class="content-show ajax_my_action">
+	<div class="show" style="width:95%;margin:0 auto;">
+	<input type="hidden" name="type" value="{$type}">
+
+	{loop $my_action $k $v}
+	<div class="session-box" id="{$v[id]}" onclick="$.Log(this)">
+	    <div class="session-content">
+			<div class="content-top">
+				<div class="left">{$v['title']} 
+					{if $v[is_con] == 1}
+					<em class="float_give_con">消耗</em>
+					{else}
+					(#{$v[id]})
+					{/if}
+				</div>
+			</div>
+			<div class="content-middle">
+				<div class="content-middle-left">
+				
+					<div class="middle-left-desc">
+						<span><i>编号</i><i class="use_name">{$v[bianhao]}</i></span>
+
+						<span><i>领用者</i><i class="use_name">{get_user($v[userid],'name')}</i></span>
+						
+					</div>
+					<div class="middle-left-desc">
+						<span><i>型号</i><i>{if $v[xinghao]}{$v[xinghao]}{else}—{/if}</i></span>
+
+						<span><i>内存</i><i>{if $v[neicun]}{$v[neicun]}{else}—{/if}</i></span>
+						
+					</div>
+
+					
+					<div class="middle-left-desc">
+						<span>
+							{if $v[status]==2}
+							<i>申请时间</i><i style="color:#5bc0de">{timetodate($v['starttime'],4)}</i>
+							{elseif $v[status]==4}
+							<i>转让时间</i><i style="color:#5bc0de">{timetodate($v['needtime'],4)}</i>
+							{elseif $v[status] == 6}
+							<i>归还时间</i><i style="color:#5bc0de">{timetodate($v['returntime'],4)}</i>
+							{else}
+							<i>启用时间</i><i style="color:#5bc0de">{$v[usingtime]}</i>
+							{/if}
+						</span>
+						{if $v[is_con] == 1}
+						<span>
+							<i>申请数量</i><i style="color:#f60;font-weight: bold;">{$v[num]}</i>
+						</span>
+						{/if}
+	
+						
+					</div>
+				
+					
+					<div class="middle-left-note">
+						{if $v[status] == 2}
+						
+						<i>领用备注</i>
+						<i>{$v[note_use]}</i>
+						<em class="float_give_2">申请领用</em>
+						{elseif $v[status] == 4}
+							
+							
+							<i>转让备注</i>
+							<i>{$v[note_need]}</i>
+							<em class="float_give_4">转让给你</em>
+						
+						{elseif $v[status]==6}
+							
+							<i>归还备注</i>
+							<i>{$v[note_return]}</i>
+							<em class="float_give_6">物品归还</em>
+						{elseif $v[status]==8}
+							
+							<i>物品备注</i>
+							<i>{$v[note]}</i>
+							<em class="float_give_8">维修中</em>
+						{/if}
+				
+					</div>
+
+					
+					
+				</div>
+			</div>
+
+	    </div>
+	</div> 
+	{/loop}
+
+
+	<div class="session-bottom-kongbai" style="width:100%;height:100px;"></div>
+
+</div>
+
+<script>
+$(function(){
+	var $height = $(window).height()-85;
+	$(".content-show").css({"height":$height});
+
+	$(".content-middle-bottom").on('click',function(){
+ 		var $div = $(this).closest('.session-box');
+		
+		var $height = $(window).height();
+
+		var title = $div.find(".content-top .left").html();
+		var time = $div.find("input[name='timeKey']").val();
+		var type = $(".content-show").find("input[name='type']").val();
+
+ 		var query = new Object();
+ 		query.ac = 'Edit';
+ 		query.func = 'ajax_confirm_log';
+ 		query.time = time;
+ 		query.type = type;
+ 		query.height = parseInt($height*0.7);
+ 		console.log(query);
+ 	
+ 		$.ajax({
+			data: query,
+			type: "POST",
+			dataType: "json",
+			url: DTPath+'ajax.php',
+			success: function(data){
+				layer.open({
+					title:[
+					title
+					],
+					content: data.html
+				    ,btn: ['关闭']
+				    ,yes: function(index){
+				      
+				      layer.close(index);
+				    }
+				});	
+			}
+		});
+ 	});
+
+	var $t = '<?php echo $t ?>';
+	if( $t != 1 ){
+		$(".session-box .session-content").click(function(){
+			if( $(this).hasClass("session-current") ){
+				$(this).removeClass("session-current");
+			}else{
+				$(this).addClass("session-current");
+				$(this).parent().siblings().find(".session-content").removeClass("session-current");
+			}
+		});
+	}
+	
+
+
+
+
+	var rot="";
+	$('.ss_toggle').on('click', function (ev) {
+		var menu = $(this).closest('.ss_menu');
+	    rot = parseInt($(this).data('rot')) - 180;
+	    menu.css('transform', 'rotate(' + rot + 'deg)');
+	    menu.css('webkitTransform', 'rotate(' + rot + 'deg)');
+	    if (rot / 180 % 2 == 0) {
+	        $(this).parent().addClass('ss_active');
+	        $(this).addClass('close');
+	    } else {
+	        $(this).parent().removeClass('ss_active');
+	        $(this).removeClass('close');
+	    }
+	    $(this).data('rot', rot);
+
+	    menu.on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+	        if (rot / 180 % 2 == 0) {
+	        	menu.find("div i").addClass('ss_animate');
+	        } else {
+	        	menu.find("div i").removeClass('ss_animate');
+	        }
+	    });
+	});
+
+
+
+
+
+})
+</script>

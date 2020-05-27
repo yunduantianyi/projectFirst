@@ -1,0 +1,461 @@
+{template 'header'}
+<div class="content" style="overflow:scroll">
+<input type="hidden" name="fromtype" value="{$class[fromtype]}">
+	<div class="edit_shadow" ></div>
+	<div class="wp_div_select" >
+		<div class="wp_div_show">{if $class[fromtype]==1}<em style="color:#f60">(内部)</em>{else}<em style="color:#5bc0de">(外部)</em>{/if}{$class[title]}</div>
+
+		<div class="wp_class_select" >
+			{if $class1}
+				{loop $class1 $v}
+				<a href="page.php?from=edit&ac=edit&func=wp_manage&id={$v[id]}">
+					<i>
+						<span class="wp_min_title"><em style="color:#f60">(内部)</em>{$v[title]}</span>
+
+						{if $v[id] == $class[id]}
+						<span class="layui-icon wp_select_selected">√</span>
+						{/if}
+
+					</i>
+				</a>
+				{/loop}
+			{/if}
+			{if $class2}
+				{loop $class2 $v}
+				<a href="page.php?from=edit&ac=edit&func=wp_manage&id={$v[id]}">
+					<i>
+						<span class="wp_min_title"><em style="color:#5bc0de">(外部)</em>{$v[title]}</span>
+
+						{if $v[id] == $class[id]}
+						<span class=" wp_select_selected">√</span>
+						{/if}
+
+					</i>
+				</a>
+				{/loop}
+			{/if}
+		</div>
+		<span class="wp_arrow_down"></span>
+	</div>
+
+
+  	<div class="scroll" >
+		<!--只作为传递一行，隐藏table-->
+	  	<table class="none-table">   
+		  	<tbody>
+				<tr>
+					<td onclick="$.Change_checked(this)">
+						<span class="class_none"></span>
+						<input type="hidden" name="id" value="">
+					</td>
+					<td style="position: relative;"> 
+						<input type="text" name="title" value="" class="form-control">
+						<span class="class_addnew"></span>
+					</td>
+
+					<td><a href="javascript:;" onclick="$.Onclick_note(this)" class="btn btn-primary btn-xs">备&nbsp;&nbsp;注</a></td>
+					
+					<td></td>
+					<td onclick="$.Onclick_con(this)">
+						<i class="goods_con">
+							<em></em>
+						</i>
+						<input type="hidden" name="is_con" value="0" >
+					</td>
+				</tr>
+
+				<tr class="goods_note" style="display: none">
+					<td colspan="3" >
+						<span>备注：</span>
+						<span class="goods_note_html"></span>
+						<input type="hidden" name="note" value="">
+					</td>
+				</tr>
+		  	</tbody>
+	  	</table>
+
+		<input type="hidden" name="cid" value="{$class[id]}">
+		<form action="" id="form">
+
+  		<table class="class_table"  >
+			<thead>
+				<tr>
+					<th style="width:15%"></th>
+					<th style="width:40%">物品名称</th>
+
+					<th style="width:15%">
+						物品备注 
+					</th>
+					<th style="width: 15%">图片</th>
+					<th style="width:15%">
+						是否消耗品
+					</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				{loop $goods $k $v}
+				<tr>
+					<td onclick="$.Change_checked(this)">
+						<span class="class_none"></span>
+						<input type="hidden" name="id" value="{$v[id]}">
+					</td>
+					<td> 
+						<input type="text" name="title" value="{$v[title]}" class="form-control">
+					</td>
+					<td ><a href="javascript:;" onclick="$.Onclick_note(this)" class="btn btn-primary btn-xs">备&nbsp;&nbsp;注</a></td>
+					<td>
+						<a href="javascript:;" class="btn btn-danger btn-xs" onclick="$.Onclick_image(this,{$v[id]})">图&nbsp;片</a>
+					</td>
+					<td onclick="$.Onclick_con(this)">
+						<i class="goods_con {if $v[is_con] == 1}con_current{/if}">
+							<em class="{if $v[is_con] == 1}em_current{/if}"></em>
+						</i>
+						<input type="hidden" name="is_con" value="{$v[is_con]}" >
+					</td>
+				</tr>
+
+				<tr class="goods_note"  {if !$v[note]} style="display: none"{/if}>
+					<td colspan="3" >
+						<span>备注：</span>
+						<span class="goods_note_html">{$v[note]}</span>
+						<input type="hidden" name="note" value="{$v[note]}">
+					</td>
+				</tr>
+
+				{/loop}
+				
+			</tbody>
+		</table>
+		</form>
+
+
+		<div class="edit-bottom-kongbai"></div>
+  	</div>
+
+	
+</div>
+
+
+<div class="do_wp_manage" style="border-top:1px solid #ccc">
+	<i href="javascript:;" class="wp_add" >添加物品</i>
+	<i href="javascript:;" class="wp_del" >删除选中</i>
+	<i href="javascript:;" class="wp_confirm">确认编辑</i>
+</div>
+      
+  <!--  
+    <div>
+      <i><a href="javascript:;" class="wp_add">添加<br/>物品</a></i>
+    </div>
+    <div>
+      <i><a href="javascript:;" class="wp_del">删除<br/>选中</a></i>
+    </div>
+    <div>
+      <i><a href="javascript:;" class="wp_confirm">确认<br/>编辑</a></i>
+    </div>
+ -->
+
+
+
+<script>
+$(function(){
+
+
+
+$(".wp_div_select").click(function(){
+	if( $(".wp_class_select").is(":hidden") ){
+		$(".wp_class_select").show();
+		$(".edit_shadow").show();
+	}else{
+		$(".wp_class_select").hide();
+		$(".edit_shadow").hide();
+	}
+})
+$(".edit_shadow").click(function(){
+	$(".wp_class_select").hide();
+	$(".edit_shadow").hide();
+})
+
+
+$(".wp_del").click(function(){
+	var $lis = $(".class_table tbody tr");
+	var id = '';
+	var count = 0;
+	$lis.each(function(){
+		if( $(this).find("td:first-child").find("span").hasClass("class_checked") ){
+			if( $(this).find("td:first-child ").find("input[name='id']").val() ){
+				id += $(this).find("td:first-child ").find("input[name='id']").val()+',';
+			}
+			count += 1;
+		}
+	})
+
+	if( count == 0 ){
+		  layer.open({
+		    content: '请勾选物品！'
+		    ,skin: 'msg'
+		    ,time: 1.5  //1.5秒后自动关闭
+		  });
+		return false;
+	}
+
+	console.log(id+"||"+count);
+	// return false;
+
+	if( id ){   //id存在  那么就是选中了数据库中（不是新添加的行）
+		id = id.substring(0,id.length-1);
+		$.post(DTPath+'ajax.php', {"ac": "Edit", "func": "wp_del","id":id,"type":0}, function( data ){
+				var o = eval("("+data+")");
+				console.log(o.code);
+				console.log(o.msg);
+
+	      		// layer.open({type: 2});
+	      			
+	      		if( o.code == 1 ){
+		      		layer.open({
+					    content: o.msg
+					    ,btn: ['我知道了']
+					    ,skin: 'footer'
+					    ,yes: function(index){
+							layer.close(index);    //取消
+					    }
+					});
+	      		}else if( o.code == 2 ){
+	      			layer.open({
+					    content: o.msg
+					    ,btn: ['确认删除','取消']
+					    ,skin: 'footer'
+					    ,yes: function(index){
+
+						    $.post(DTPath+'ajax.php', {"ac": "Edit", "func": "wp_del","id":id,"type":1}, function( data ){
+									var o = eval("("+data+")");
+									if( o.code == 1 ){
+										console.log(o);
+										$lis.each(function(){
+											var $next = $(this).closest('tr').next();
+											if( $(this).find("td:first-child").find("span").hasClass("class_checked") ){
+												$(this).remove();
+												$next.remove();
+											}
+										})
+
+
+									}else{
+
+									}
+							});
+							layer.close(index);    //取消
+					    }
+					});
+	      		}
+		});
+	}else{
+      	layer.open({   //无id  删除新添加
+		    content: '是否删除新添加物品？'
+		    ,btn: ['确认删除']
+		    ,skin: 'footer'
+		    ,yes: function(index){
+		    	$lis.each(function(){
+		    		var $next = $(this).closest('tr').next();
+					if( $(this).find("td:first-child").find("span").hasClass("class_checked") ){
+						$(this).css({"border":"1px solid red"});
+						
+						$(this).remove();
+						$next.remove();
+					}
+				});
+				layer.close(index);    //取消
+		    }
+		});
+
+	}
+
+
+})
+
+
+
+
+$(".wp_confirm").click(function(){
+	var fromtype = $("input[name='fromtype']").val();
+	var $arr = $("#form").serializeArray();
+	var cid = $("input[name='cid']").val();
+	console.log($arr);
+	$.post(DTPath+'ajax.php', {"ac": "Edit", "func": "wp_confirm","arr":$arr, "cid":cid,"type":0,"fromtype":fromtype}, function( data ){
+			var o = eval("("+data+")");
+			if( o.code == 1 ){
+				// console.log(o);
+				layer.open({
+				    content: o.msg
+				    ,btn: ['确定编辑','取消']
+				    ,skin: 'footer'
+				    ,yes: function(index){
+				     
+					$.post(DTPath+'ajax.php', {"ac": "Edit", "func": "wp_confirm","arr":$arr, "cid":cid,"type":1,"fromtype":fromtype}, function( data ){
+							var o = eval("("+data+")");
+							if( o.code == 1 ){
+								layer.open({type: 2});
+				      			window.location.reload();
+
+							}else{  //未知错误
+								layer.open({
+								    content: '添加分类出错，请联系开发人员！'
+								    ,skin: 'msg'
+								    ,time: 2  //1.5秒后自动关闭
+								  });
+								window.setTimeout(function () {
+		                       		window.location.reload();
+		                   		}, 2000);
+							}
+					});	
+				      layer.close(index);
+				    }
+				});
+			}else{
+				layer.open({
+				    content: o.msg
+				    ,btn: ['我知道了']
+				    ,skin: 'footer'
+				    ,yes: function(index){
+						layer.close(index);    //取消
+				    }
+				});
+			}
+
+	});
+})
+
+$.Onclick_con = function(obj){
+	var is_con = $(obj).find("input[name='is_con']");
+	var fromtype = $("input[name='fromtype']").val();
+	// alert(is_con);
+	if( is_con.val() == 0 ){
+		layer.open({
+		    content: '消耗品领用后无法归还，请谨慎选择！'
+		    ,skin: 'msg'
+		    ,time: 3  //1.5秒后自动关闭
+	  	});
+	}
+	// console.log(is_con.val());
+
+	// if( fromtype == 1 ){
+		if( is_con.val() == 0 ){
+			$(obj).find("i").addClass("con_current");
+			$(obj).find("em").addClass("em_current");
+			is_con.val("1");
+		}else{
+			$(obj).find("i").removeClass("con_current");
+			$(obj).find("em").removeClass("em_current");
+			is_con.val("0");
+		}
+	// }else{
+		// layer.open({
+		//     content: '外部交付物品无法标记为消耗品！'
+		//     ,skin: 'msg'
+		//     ,time: 2  //1.5秒后自动关闭
+	 //  	});
+	// }
+
+}
+
+$.Onclick_image = function(obj,gid){   //点击图片
+
+	var title = $(obj).closest('tr').find("input[name='title']").val();  //标题
+
+	var query = new Object();
+	query.ac = 'Edit';
+	query.func = 'ajax_get_image';
+	query.gid = gid;
+
+	$.ajax({
+		data: query,
+		type: "POST",
+		dataType: "json",
+		url: DTPath+'ajax.php',
+		success: function(data){
+			layer.open({
+				 title: [
+			      title
+			    ]
+			    ,content: data.html
+			    ,btn: ['关闭']
+			    ,yes: function(index){
+			  
+			    	layer.close(index);
+			    }
+			});	
+		}
+	});
+
+}
+$.Clean_Image = function(obj,gid){ //清除图片
+	var query = new Object();
+	query.ac = 'Edit';
+	query.func = 'ajax_clean_img';
+	query.gid = gid;
+
+	$.ajax({
+		data: query,
+		type: "POST",
+		dataType: "json",
+		url: DTPath+'ajax.php',
+		success: function(data){
+			if( data.code == 1 ){
+				$(obj).closest('.ajax_get_image').find("img").attr("src","");
+			}
+
+		}
+	});
+
+}
+
+
+$.Onclick_note = function(obj){  //添加note
+		var $notetr = $(obj).closest('tr').next();
+		var notehtml = $.trim($notetr.find(".goods_note_html").html());
+		var new_title = $(obj).closest('tr').find("input[name='title']").val();
+		// console.log(notehtml);
+		// return false;
+	  	layer.open({
+		    content: '<span class="goods_manage_note_title">请填写<span style="color:#f60">'+new_title+'</span>备注</span><br/> <input type="text" class="goods_manage_note" value="'+notehtml+'">'
+		    ,btn: ['保存', '取消']
+		    ,yes: function(index){
+		      var inputval = $.trim($(".goods_manage_note").val());
+		      // console.log(inputval);
+		      if( inputval == undefined || inputval == "" ){
+		      	// $notetr.css({"display":"none"});
+		      	$notetr.hide();
+		      	$notetr.find(".goods_note_html").html("");
+		      	$notetr.find("input").val("");
+		      	
+		      }else{
+		      	$notetr.show();
+		      	$notetr.find(".goods_note_html").html(inputval);
+		      	$notetr.find("input").val(inputval);
+		      }
+
+
+		      
+		      layer.close(index);
+		    }
+		});
+}
+
+
+$(".wp_add").click(function(){
+	var insertHtml = $('.none-table tbody').html();
+	 // console.log(insertHtml);
+	$(".class_table tbody").append(insertHtml);
+
+	//选中需要添加的最后一行   不知道手机端会怎样 ？？？
+	// $(".class_table tbody").find("tr:last").find("input[name='title']").focus();
+
+
+})
+
+
+
+
+})
+</script>
+{template 'footer'}

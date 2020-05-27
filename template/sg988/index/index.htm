@@ -1,0 +1,192 @@
+{template 'header'}
+
+<div class="scroll-content"  style="overflow:scroll">
+	<input type="hidden" name="use" value="{$use}">
+    <div class="scroll">
+        <div class="header home-header">
+            <div class="toolbar statusbar-padding active">
+                <button class="bar-button current-city">
+                	<!-- <i class="icon icon-set"></i> -->
+                </button>
+                <!-- <button class="bar-button icon-button" onclick="$.Show_Tips()"><i class="icon icon-msg"></i></button> -->
+            </div>
+        </div>
+
+		<div class="my-car-thumbnail"  style="position: relative;">
+			<img src="images/banner.png" />
+			
+		</div>
+
+
+
+      
+		<div class="devider b-line"></div>
+		 <div class="admin-manager">
+			{if $_userid && $USER}
+			<img src="{$index_img}" class="admin-image">
+			<div class="admin-hello">{$index_who}</div>
+			{else}
+			<div class="admin-hello" style="margin-left: 20px">未激活,请点击<i style="color:#f60">右上角刷新</i>激活</div>
+			{/if}
+	     </div>
+
+        <div class="devider b-line"></div>
+        <!-- 个人中心 begin-->
+        <div>
+            <div class="aui-list-cells">
+                <a href="page.php?from=index&ac=index&func=my_goods" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-1.png"></div>
+                    <div class="aui-list-cell-cn">我的物品</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+               
+                <a href="javascript:;" class="aui-list-cell" onclick="$.From('index')">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-3.png"></div>
+                    <div class="aui-list-cell-cn">领用通道</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+                <a href="page.php?from=index&ac=index&func=my_action" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-4.png"></div>
+                    <div class="aui-list-cell-cn">待我处理</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+               <!--   <a href="javascript:;" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-2.png"></div>
+                    <div class="aui-list-cell-cn">申请认证</div>
+                    <div class="aui-list-cell-fr">未认证</div>
+                </a> -->
+
+
+
+                <i class="admin_action" {if ($USER[isAdmin] !=1) && ($USER[isBoss] !=1) && ($USER[manager] !=1) }style="display:none"{/if}  >
+                    <div class="devider b-line"></div>
+                    {if ($USER[isAdmin] ==1) || ($USER[isBoss] ==1)}
+                    <a href="page.php?ac=edit&func=class_manage&fromtype=1" class="aui-list-cell">
+                        <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-5.png"></div>
+                        <div class="aui-list-cell-cn">分类管理(管理员)</div>
+                        <div class="aui-list-cell-fr"></div>
+                    </a>
+                    {/if}
+                    <a href="page.php?from=edit&ac=edit&func=wp_manage" class="aui-list-cell">
+                        <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-5.png"></div>
+                        <div class="aui-list-cell-cn">物品管理(管理员)</div>
+                        <div class="aui-list-cell-fr"></div>
+                    </a>
+                    <a href="javascript:;" onclick="$.FILES()" class="aui-list-cell">
+
+                        <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-5.png"></div>
+                        <div class="aui-list-cell-cn">物品录入(手动添加,excel导入)</div>
+                        <div class="aui-list-cell-fr"></div>
+                    </a>
+                    
+                </i>
+                
+
+
+
+                <div class="devider b-line"></div>
+                <a href="page.php?from=index&ac=index&func=daochu_manage" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-5.png"></div>
+                    <div class="aui-list-cell-cn">查询物品报表</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+                <a href="javascript:;" onclick="$.Get_My_Log()" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-log.png"></div>
+                    <div class="aui-list-cell-cn">查看日志</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+                <a href="javascript:;" onclick="$.Opinion()" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-s-15.png"></div>
+                    <div class="aui-list-cell-cn">意见反馈</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+               <!--  <a href="javascript:;" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-6.png"></div>
+                    <div class="aui-list-cell-cn">点击好评</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a> -->
+                <div class="devider b-line"></div>
+                
+                
+            </div>
+        </div>
+		<div class="session-bottom-kongbai" style="width:100%;height:100px;"></div>
+
+    </div>
+</div>
+
+      
+{template 'footer'}
+<script>
+$(function(){
+	var $height = $(window).height();
+	$.Opinion = function(){
+		layer.open({
+	        content: '<span style="color:#f60">意见反馈</span><br/><textarea style="width:93%" class="form-control" name="opinion" id=""  rows="3"></textarea>'
+	        ,btn: ['提交', '取消']
+	        ,yes: function(index){
+	         set_Opinion();
+	          layer.close(index);
+	        }
+	    });
+	}
+	
+	$.Get_My_Log = function(){
+		var query = new Object();
+		query.ac = 'Index';
+		query.func = 'ajax_about_my';
+		query.width =parseInt($(window).width() * 0.8)-130;
+		query.height = parseInt($height * 0.7);
+		
+		$.ajax({
+			data: query,
+			type: "POST",
+			dataType: "json",
+			url: DTPath+'ajax.php',
+			success: function(data){
+				layer.open({
+					title: [
+						'查看日志(所有)'
+					]
+					,content: data.html
+					,btn: ['关闭']
+					,yes: function(index){
+						// location.reload();
+						layer.close(index);
+					}
+				}); 
+			}
+		});
+
+ 		
+ 	}
+
+
+
+})
+
+function set_Opinion(){
+	var opinion = $("textarea[name='opinion']").val();
+	var query = new Object();
+	query.ac = 'Index';
+	query.func = 'ajax_set_opinion';
+	query.opinion = opinion;
+	$.ajax({
+		data: query,
+		type: "POST",
+		dataType: "json",
+		url: DTPath+'ajax.php',
+		success: function(data){
+			if( data.code == 1 ){
+				layer.open({
+	                content: data.msg
+	                ,skin: 'msg'
+	                ,time: 1.5  //1.5秒后自动关闭
+	            });
+			}
+			
+		}
+	});
+
+}
+</script>

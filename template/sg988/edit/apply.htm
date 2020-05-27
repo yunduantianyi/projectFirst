@@ -1,0 +1,293 @@
+{template 'header'}
+<!-- <script src="file/script/layer/layer.js"></script> -->
+<div class="hidden_html">
+	<div class="apply_desc" attr-id="" id="">
+		<input type="hidden" name="id" value="">
+		<input type="hidden" name="status" value="">
+		
+		<div class="line_title">
+			<i>物品明细 (<em>1</em>)</i>
+			{if $goods[is_con] != 1}
+			<i style="cursor: pointer;" onclick="$.Del_Apply(this)">删除</i>
+			{/if}
+		</div>
+		<div class="line_content">
+			<i>
+				<span>编号</span>
+				<span></span>
+			</i>
+			<i>
+				<span>操作</span>
+				<span></span>
+			</i>
+			<i>
+				<span>型号</span>
+				<span></span>
+			</i>
+			<i>
+				<span>系统</span>
+				<span></span>
+			</i>
+			<i>
+				<span>内存</span>
+				<span></span>
+			</i>
+			<i>
+				<span>版本</span>
+				<span></span>
+			</i>
+			<i>
+				<span>备注</span>
+				<span></span>
+			</i>
+
+			{if $goods['is_con'] == 1}
+			<i style="height: 50px;">
+				<span style="margin-top:15px">领用数量</span>
+				<span style="margin-top:10px"> 
+					<em class="apply_plus_minus" onclick="$.Set_Num(this,'minus')">-</em>
+				 	<input type="text" class="apply_num_set" name="num" value="1" onchange="$.Set_Num(this,'string')">
+				 	<em class="apply_plus_minus" onclick="$.Set_Num(this,'plus')">+</em>
+				</span>
+			</i>
+			{/if}
+			
+
+		</div>
+		<textarea name="note_use" rows="2" style="border-color: #fff" class="form-control" placeholder="请填写申请备注"></textarea>
+	</div>
+</div>
+
+<div class="show_goods">
+
+<div class="content" style="overflow:auto">
+    <div class="scroll-content apply_form">
+    	<input type="hidden" name="gid" value="{$id}">
+    	<input type="hidden" name="userid" value="{$_userid}">
+    	<input type="hidden" name="fromtype" value="{$fromtype}">
+	
+    	<input type="hidden" name="ac_top" value="{$ac}">
+    	<input type="hidden" name="func_top" value="{$func}">
+    	<input type="hidden" name="is_con" value="{$goods[is_con]}">
+
+
+        <div class="scroll">
+    		<div class="apply_goods">
+				<div class="apply_goods_title">
+					{$goods[title]}
+				</div>
+				<div class="apply_goods_desc">
+					<i>
+						<span>物品来源</span>
+						<span>{if $goods[fromtype] == 1}企业内部物品{else}外部物品{/if}</span>
+					</i>
+
+					<i>
+						<span>是否消耗品</span>
+						<span>{if $goods[is_con] == 1}<b style="color:#f60">消耗品</b>{else}非消耗品{/if}</span>
+					</i>
+					<i>
+						<span>可申请数量</span>
+						<span><b style="color:#f60">{$count}</b></span>
+					</i>
+					
+					<i>
+						<span>物品备注</span>
+						<span>{$goods[note]}</span>
+					</i>
+				</div>
+
+				{if $goods[image]}
+				<div style="width: 220px;height:110px;position: absolute;right: 0px;top:0px">
+					<img src="{DT_PATH}uploads/goods/{$goods[image]}" style="width: 220px;height: 110px;border-radius: 5px" alt="">
+				</div>
+				{/if}
+
+
+    		</div>
+    		<div class="devider devider-apply">
+    		</div>
+
+
+			<form action="" id="form">
+	    		<div class="apply_content">
+	    			
+					
+	    		</div>
+    		</form>
+		    <div class="edit-bottom-kongbai"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="do_apply">
+	{if $goods[is_con] == 1}
+	<a href="javascript:;" class="btn btn-primary a_apply" onclick="$.Add_Goods()">查看消耗品领用</a>
+	{else}
+	<a href="javascript:;" class="btn btn-primary a_apply" onclick="$.Add_Goods()">+增加物品明细</a>
+	{/if}
+	
+	<a href="javascript:;" class="btn btn-primary a_apply" onclick="$.Goods_Action()">提交申请</a>
+	
+
+</div>
+<script>
+$(function(){
+
+	var is_con = $("input[name='is_con']").val();  //1  消耗  2非消耗
+
+	$.Del_Apply = function(obj){
+		var $lis = $(obj).closest('.apply_desc');
+		layer.open({
+		    content: '是否清除本条申请？'
+		    ,btn: ['确认删除','取消']
+		    ,skin: 'footer'
+		    ,yes: function(index){
+		    	$lis.remove();
+				setNum();
+				layer.close(index);    //取消
+		    }
+		});
+		
+	}
+
+	$.Set_Num = function(obj,type){  //plus    minus   string
+		// console.log(type);
+		var num = parseInt($(obj).parent().find("input[name='num']").val());
+		if( isNaN(num) || num == undefined ){
+			num = 1;
+		}
+		var count = '<?php echo $count; ?>';
+		console.log(num+"||"+count);
+		if( type == 'plus' || type == 'minus' ){
+			if( type == 'plus' ){   //加
+				var num = parseInt(num*1)+1;
+			}else if( type == 'minus' ){ //减
+				var num = parseInt(num*1) -1;
+			}	
+		}else if( type == 'string' ){  //判断是否为字符串
+			console.log(type);
+		}
+		if( num < 1 ){
+			num  = 1;
+		}
+		if( num > count ){
+			num = count;
+		}
+		
+		$(obj).parent().find("input[name='num']").val(num);
+	}
+
+	$.Add_Goods = function(){
+		
+		var $height = $(window).height();
+		var title = $(".apply_goods_title").html();
+		var gid = $("input[name='gid']").val();
+		var $lis = $("form .apply_content .apply_desc");
+		var id_total = "";
+		var userid = $("input[name='userid']").val();
+		$lis.each(function(){
+			id_total += $(this).find("input[name='id']").val()+',';
+		});
+
+		var query = new Object();
+		query.ac = 'Edit';
+		query.func = 'ajax_check_log';
+		query.gid = gid;
+		query.height = parseInt($height*0.7);
+		query.id_total = id_total;
+		query.userid = userid;
+
+		$.ajax({
+			data: query,
+			type: "POST",
+			dataType: "json",
+			url: DTPath+'ajax.php',
+			success: function(data){
+				layer.open({
+					 title: [
+				      title
+				    ]
+				    ,content: data.html
+				    ,btn: ['确认选中', '关闭']
+				    ,yes: function(index){
+				      //确定选中
+				      	setHtml(index);
+
+				    	layer.close(index);
+				    }
+				});	
+			}
+		});
+	}
+
+
+
+	if( is_con == 1 ){  //消耗品
+		var count = '<?php echo $count; ?>';
+		if( count >=1 ){
+			var hidden_html = $(".hidden_html").html();
+			$("form .apply_content").append(hidden_html);
+			// console.log(count);
+		}
+	}else{
+		
+		$.Add_Goods();
+	}
+
+	
+
+})
+
+function  setHtml(index){
+	
+  	var $lis = $(".goods_show_all tbody tr");
+  	var id = "";  //获取id  写入
+	$lis.each(function(){
+		var hidden_html = "";
+	    if( $(this).find("td:nth-child(1) span").hasClass("class_checked") ){
+	        id = $(this).attr("class");
+	        if( $(".apply_content #id_"+id).length == 0 ){  //id 不存在
+                 // console.log(id);
+				$.post(DTPath+'ajax.php', {"ac": "Edit", "func": "ajax_check_log_id","id":id}, function( data ){
+                    var o = eval("("+data+")");
+                    if( o.code == 1 ){
+                    	$(".hidden_html .apply_desc").attr("id","id_"+o.html.id)
+                    	$(".hidden_html .apply_desc").attr("attr-id",o.html.id);
+                    	$(".hidden_html").find("input[name='id']").val(o.html.id);
+                    	$(".hidden_html").find("input[name='status']").val(o.html.status);
+                    	$(".hidden_html .line_content").find("i:nth-child(1) span:nth-child(2)").html(o.html.bianhao);
+                    	$(".hidden_html .line_content").find("i:nth-child(2) span:nth-child(2)").html(o.html.caozuo);
+                    	$(".hidden_html .line_content").find("i:nth-child(3) span:nth-child(2)").html(o.html.xinghao);
+                    	$(".hidden_html .line_content").find("i:nth-child(4) span:nth-child(2)").html(o.html.xitong);
+                    	$(".hidden_html .line_content").find("i:nth-child(5) span:nth-child(2)").html(o.html.neicun);
+                    	$(".hidden_html .line_content").find("i:nth-child(6) span:nth-child(2)").html(o.html.banben);
+                    	$(".hidden_html .line_content").find("i:nth-child(7) span:nth-child(2)").html(o.html.note);
+
+                    	hidden_html = $(".hidden_html").html();
+                    	// console.log(hidden_html);
+                    	$("form .apply_content").append(hidden_html);
+                    	setNum();
+                    }
+                });
+	        }
+	    }
+    })
+}
+
+function setNum(){
+	
+	var $lis = $(".apply_content .apply_desc");
+	var set = 1;
+	
+	$lis.each(function(){
+		$(this).find(".line_title em").html(set);
+		set +=1;
+	});
+	
+}
+
+</script>

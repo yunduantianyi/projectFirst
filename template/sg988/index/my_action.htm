@@ -1,0 +1,230 @@
+{template 'header'}
+<style>
+	
+      
+     
+        .find_nav_list {
+		    /*position: absolute;*/
+		    left: 0;
+		    width: 100%;
+		}
+		.find_nav .find_nav_list ul li{
+			width: 33%;
+			display: inline-block;
+   			padding: 0 16px;
+		}
+
+</style>
+<div class="find_nav">
+    <div class="find_nav_left">
+        <div class="find_nav_list">
+            <ul>
+				{if $manager_arr}
+                <li><a href="javascript:void(0)" class="nav1">申请审批<b class="apply_count" style="color:#f60">{if $apply_count} ( {$apply_count} ) {/if}</b></a></li>
+                
+                <li><a href="javascript:void(0)" class="nav2">维修中<b class="repaire_count" style="color:#f60">{if $repaire_count} ( {$repaire_count} ) {/if}</b></a></li>
+				{/if}
+                <li><a href="javascript:void(0)" class="nav10">转让请求<b class="give_count" style="color:#f60">{if $give_count} ( {$give_count} ) {/if}</b></a></li>
+                
+                <li class="sideline"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<input type="hidden" name="userid" value="{$_userid}">
+<div class="content" style="background: #f5f5f5;">
+	
+
+
+
+</div>
+{template 'footer'}
+
+<script src="file/script/hammer.min.js"></script>
+<script src="file/script/slide2del.js"></script>
+<script>
+$(function(){
+	// $(".find_nav_list").css("left",sessionStorage.left+"px");
+	getAction(sessionStorage.pagecount);
+    $(".find_nav_list li").each(function(){
+    	if( $(this).find("a").attr("class") == sessionStorage.pagecount ){
+            $(".sideline").css({left:$(this).position().left});
+            $(".sideline").css({width:$(this).outerWidth()});
+            $(this).addClass("find_nav_cur").siblings().removeClass("find_nav_cur");
+            navClass(sessionStorage.pagecount);
+            return false
+        }else{
+        	$(".sideline").css({left:0});
+        	$(".find_nav_list li").eq(0).addClass("find_nav_cur").siblings().removeClass("find_nav_cur");
+        }
+    });
+
+    var nav_w=$(".find_nav_list li").first().innerWidth();
+    $(".sideline").innerWidth(nav_w);
+    $(".find_nav_list li").on('click', function(){
+        nav_w=$(this).innerWidth();
+
+        $(".sideline").stop(true);
+        $(".sideline").animate({left:$(this).position().left},300);
+        $(".sideline").animate({width:nav_w});
+        $(this).addClass("find_nav_cur").siblings().removeClass("find_nav_cur");
+       
+
+        var fn_w = ($(".find_nav").innerWidth() - nav_w) / 2;
+        var fnl_l;
+        var fnl_x = parseInt($(this).position().left);
+        if (fnl_x <= fn_w) {
+            fnl_l = 0;
+        } else if (fn_w - fnl_x <= flb_w - fl_w) {
+            fnl_l = flb_w - fl_w;
+        } else {
+            fnl_l = fn_w - fnl_x;
+        }
+        $(".find_nav_list").animate({
+            "left" : fnl_l
+        }, 300);
+       	
+       	sessionStorage.left=fnl_l;
+        var c_class=$(this).find("a").attr("class");
+        navClass(c_class);
+    });
+    var fl_w=$(".find_nav_list").innerWidth();
+    var flb_w=$(".find_nav_left").innerWidth();
+    $(".find_nav_list").on('touchstart', function (e) {
+        var touch1 = e.originalEvent.targetTouches[0];
+        x1 = touch1.pageX;
+        y1 = touch1.pageY;
+        ty_left = parseInt($(this).css("left"));
+    });
+    $(".find_nav_list").on('touchmove', function (e) {
+        var touch2 = e.originalEvent.targetTouches[0];
+        var x2 = touch2.pageX;
+        var y2 = touch2.pageY;
+        if(ty_left + x2 - x1>=0){
+            $(this).css("left", 0);
+        }else if(ty_left + x2 - x1<=flb_w-fl_w){
+            $(this).css("left", flb_w-fl_w);
+        }else{
+            $(this).css("left", ty_left + x2 - x1);
+        }
+        if(Math.abs(y2-y1)>0){
+            e.preventDefault();
+        }
+    });
+
+
+  
+
+//查看详情页面两个点击按钮   confirm_sure  confirm_cancel
+	// $(".confirm_sure").on('click',function(){
+	// 	console.log("asd");
+
+	// })
+
+	$(document).on("click", ".confirm_action", function(){ 
+		var $div = $(this).closest('.confirm_content');
+		var id = $div.find("input[name='id']").val();
+		var action = $(this).attr("attr-action");
+		var type = $(".ajax_confirm_log").find("input[name='type']").val();
+
+		console.log(id+"||"+type+"||"+action);
+
+		var query = new Object();
+ 		query.ac = 'Edit';
+ 		query.func = 'ajax_confirm_log';
+ 		query.id = id;
+ 		query.type = type;
+ 		query.action = action;
+ 		$.ajax({
+			data: query,
+			type: "POST",
+			dataType: "json",
+			url: DTPath+'ajax.php',
+			success: function(data){
+				console.log(data);
+				console.log(query);
+
+				$div.remove();
+				var c = $(".ajax_confirm_log .confirm_content").length;
+				
+				if( c == 0 ){
+					layer.closeAll();
+					
+					$(".time_"+data.time+"").fadeOut();
+					if( type == 'apply' ){
+						var a = $.trim($(".apply_count").html());
+						a = a.substring(1,a.length-1)-1;
+
+						if( a <=0 ){
+							$(".apply_count").html("");
+						}else{
+							$(".apply_count").html(" ( "+a+" ) ");
+						}
+
+					}
+
+				}
+
+
+			}
+		});
+		// layer.closeAll();
+	}); 
+
+
+
+
+});
+function getAction(c_class){
+	
+	var userid = $("input[name='userid']").val();
+
+	var loading = '<div class="loading"><img src="images/loading.gif" alt=""></div>';
+	$(".content").css({"background":"#FFF1CE"});
+	$(".content").html(loading);
+
+	// alert(c_class);
+	$.post(DTPath+'ajax.php', {"ac": "Index", "func": "ajax_my_action","class":c_class,"userid":userid}, function( data ){
+		var o = eval("("+data+")");
+		
+		window.setTimeout(function () {
+			$(".content").css({"background":"#F5F5F5"});
+           	$(".content").html(o.html);
+
+           	var length = $(".content .content-show .session-box").length;
+           	if( length > 0 ){
+
+           		if( c_class == 'nav1' ){
+	           		$(".apply_count").html(" ( "+length+" ) ");
+
+	           	}else if( c_class == 'nav2' ){
+	           		$(".more_return_count").html(" ( "+length+" ) ");
+
+	           	}else if( c_class == 'nav10' ){
+	           		$(".give_count").html(" ( "+length+" ) ");
+	           	}
+           	}
+
+       	}, 1000);
+		
+		// console.log(o.html);
+
+	});	
+
+}
+function navClass(c_class) {
+    // switch (c_class) {
+    //     case "nav1":
+    //        	$(".show1").show();
+    //        	$(".show1").siblings().hide();
+    //         break;
+    //     case "nav2":
+    //        	$(".show2").show();
+    //         $(".show2").siblings().hide();
+    //         break; 
+    // }
+    sessionStorage.pagecount = c_class;
+    getAction(c_class);
+    
+}
+</script>

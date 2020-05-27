@@ -1,0 +1,35 @@
+<div class="ajax_show_html"  style="max-height:{$height}px;overflow: scroll;">
+<style>
+ .fileinput-button {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    width:150px;
+    height:20px;
+}
+
+.fileinput-button input{
+    position:absolute;
+}
+</style>
+  	
+	<div align="center">
+		<a href="{DT_PATH}uploads/templet/templet.xls"  class="btn btn-warning" style="width:120px;">下载模版</a>
+
+		<a href="javascript:;" onclick="$.Upload()" class="btn btn-info" style="width:120px;">手动添加</a>
+        <span class="btn btn-info fileinput-button">
+            
+            <input type="file" name="file" class="xls_upload" onchange="$.Upload('uploads')">
+        </span>
+    </div>
+
+
+	<div class="add_html">
+		
+
+	</div>
+
+	
+</div>
+
+		

@@ -1,1 +1,8 @@
+#忽略文件
+config.inc.php
+common.inc.php
 
+file/script/config.js
+
+#忽略文件夹
+file/cache/*

@@ -1,0 +1,116 @@
+{template 'header'}
+
+<div class="scroll-content"  style="overflow:scroll">
+    <div class="scroll">
+        <div class="header home-header">
+            <div class="toolbar statusbar-padding active">
+                <button class="bar-button current-city">
+                	<!-- <i class="icon icon-set"></i> -->
+                </button>
+                <button class="bar-button icon-button" onclick="$.Show_Tips()"><i class="icon icon-msg"></i></button>
+            </div>
+        </div>
+        <div class="my-info">
+            <div class="my-info-background" style="background-color:#5bc0de; -webkit-filter:blur(0px)">
+                <div class="my-avatar">{$name}</div>
+            </div>
+            
+            
+           <!--  <span class="my-vip" style="background:none">{if $USER['isAdmin']==1}企业管理员{elseif $USER['isBoss']==1}企业BOSS{else}员工{/if}</span> -->
+        </div>
+      
+        <div class="devider b-line"></div>
+        <!-- 个人中心 begin-->
+        <div>
+            <div class="aui-list-cells">
+                <a href="page.php?from=index&ac=index&func=my_goods" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-1.png"></div>
+                    <div class="aui-list-cell-cn">我的物品</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+               
+                <a href="page.php?from=index&ac=edit" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-3.png"></div>
+                    <div class="aui-list-cell-cn">领用通道</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+                <a href="page.php?from=index&ac=index&func=my_action" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-4.png"></div>
+                    <div class="aui-list-cell-cn">待我处理</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+               <!--   <a href="javascript:;" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-2.png"></div>
+                    <div class="aui-list-cell-cn">申请认证</div>
+                    <div class="aui-list-cell-fr">未认证</div>
+                </a> -->
+
+
+
+                <i class="admin_action" {if ($USER[isAdmin] !=1) && ($USER[isBoss] !=1)}style="display:none"{/if}  >
+                    <div class="devider b-line"></div>
+                    <a href="javascript:;" class="aui-list-cell">
+                        <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-5.png"></div>
+                        <div class="aui-list-cell-cn">分类管理(管理员)</div>
+                        <div class="aui-list-cell-fr"></div>
+                    </a>
+                    <a href="javascript:;" class="aui-list-cell">
+                        <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-5.png"></div>
+                        <div class="aui-list-cell-cn">物品管理(管理员)</div>
+                        <div class="aui-list-cell-fr"></div>
+                    </a>
+                     <a href="javascript:;"  class="aui-list-cell">
+                        <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-5.png"></div>
+                        <div class="aui-list-cell-cn">物品导入、手动添加(管理员)</div>
+                        <div class="aui-list-cell-fr"></div>
+                    </a>
+                </i>
+                
+
+
+
+                <div class="devider b-line"></div>
+                <a href="javascript:;" onclick="$.Opinion()" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-s-15.png"></div>
+                    <div class="aui-list-cell-cn">意见反馈</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a>
+               <!--  <a href="javascript:;" class="aui-list-cell">
+                    <div class="aui-list-cell-fl"><img src="images/icon-png/icon-n-6.png"></div>
+                    <div class="aui-list-cell-cn">点击好评</div>
+                    <div class="aui-list-cell-fr"></div>
+                </a> -->
+                <div class="devider b-line"></div>
+                
+                
+            </div>
+        </div>
+		<div class="session-bottom-kongbai" style="width:100%;height:100px;"></div>
+
+    </div>
+</div>
+
+      
+{template 'footer'}
+<script>
+$(function(){
+	$.Opinion = function(){
+		layer.open({
+	        content: '<span style="color:#f60">意见反馈</span><br/> <input type="text" class="goods_manage_note" value="">'
+	        ,btn: ['提交', '取消']
+	        ,yes: function(index){
+	         
+
+
+	          
+	          layer.close(index);
+	        }
+	    });
+	}
+	
+
+
+
+
+})
+</script>

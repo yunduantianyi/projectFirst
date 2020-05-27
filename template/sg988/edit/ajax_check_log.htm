@@ -1,0 +1,203 @@
+{template 'ajax_header'}
+<style>
+.layui-m-layerbtn span, .layui-m-layerchild h3{
+	max-width: 400px;
+}
+</style>
+
+<div class="ajax_add_html"  style="height:{$height}px;overflow: scroll;">
+  	<form action="">
+	<table class="goods_show_all">
+		<thead>
+			<tr>
+				<th style="width:10%"></th>
+				{if $goods[cid] == 1}
+				<th style="width:25%">图书名称</th>
+				{else}
+				<th style="width:20%">领用人</th>
+				{/if}
+				
+				{if $goods[is_con] == 0}
+				<th style="width:25%">编号</th>
+				{/if}
+				
+				<th style="width:20%">状态</th>
+				{if $goods['is_con'] == 1}
+				<th style="width:20%">数量</th>
+				{else}
+				<th style="width:20%">详情</th>
+				{/if}
+				
+			</tr>
+		</thead>
+
+		<tbody>
+
+			{loop $my $k $v}
+				<tr class="{$v[id]}">
+					<td onclick="$.Change_checked(this)">
+						{if ($v[status] == 1) && ($goods['is_con'] == 0)}
+							{if in_array($v[id],$id_arr)}
+							<span class="class_checked"></span>
+							{else}
+							<span class="class_none"></span>
+							{/if}
+							<input type="hidden" name="id" value="{$v[id]}">
+						{/if}
+					</td>
+					
+					{if $goods[cid] == 1}
+					<td> 
+						{$v[note]}
+					</td>
+					{else}
+					<td> 
+						{if $v[userid] == $userid}
+						<span style='color:#46b8da'>{get_user($v[userid], 'name')}</span>
+						{else}
+						{get_user($v[userid], 'name')}
+						{/if}
+					</td>
+					{/if}
+					
+
+
+					{if $goods[is_con] == 0}
+					<td> 
+						{$v[bianhao]}
+					</td>
+					{/if}
+					
+					<td> 
+						
+						{if $v[status] == 1}
+						<span style='color:#f60'>可领用</span>
+						{elseif $v[status] == 2}
+						<span style='color:#666'>申请中</span>
+						{elseif $v[status] == 3}
+						使用中
+						{elseif $v[status] == 4}
+						<span style='color:#5bc0de'>转让中</span>
+						{elseif $v[status] == 6}
+						<span style='color:#5bc0de'>归还中</span>
+						{elseif $v[status] == 8}
+						<span style='color:#ccc'>维修中</span>
+						{elseif $v[status] == 9}
+						<span style='color:#ccc'>已报废</span>
+						{/if}
+						
+					</td>
+					<td>
+						{if $goods[is_con] == 0}
+						<a href="javascript:;" class="btn btn-info btn-xs" onclick="$.Add_Note(this)">查看详情</a>
+						{else}
+							{if $v[status] == 1}
+								<b style="color:#f60">{$v[num]}</b>
+							{else}
+								{$v[num]}
+							{/if}
+						
+						{/if}
+					</td>
+					
+				</tr>
+				<tr class="apply-desc" style="display: none;box-shadow:0px 0px 10px #000;">
+					<td colspan="5" style="">
+						<div class="check_add_note"> 
+							{if $goods[cid] == 1 && ($v[status] == 2 || $v[status]==3 || $v[status]==6  )}
+
+							<div class="book_need" onclick="$.Add_Note(this,'{$v[id]}')">请求<br/>借阅</div>
+
+							<!-- timetodate(time(),6) <  date('Y-m-d H:i:s', strtotime( $nv['time']." +3 day" )) -->
+							{/if}
+							<div class="need_tips"></div>
+							<div class="add_note_line add_need_book" style="width: 100%;">
+								{if $v['needbook']}
+								{loop $v['needbook'] $nv}
+									
+									{if $nv[status] == 1}
+									<div class="need_man">
+										<div>{get_user($nv[userid], 'name')}</div>
+										<div>请求借阅</div>
+										<div>{$nv[time]}</div>
+									</div>
+									{/if}
+									<!--三天内借阅成功的可以显示-->
+									{if $nv[status] == 0 && timetodate(time(),6) < date( 'Y-m-d H:i:s',strtotime($nv[time]." +3 day " ) ) }
+									<div class="need_man green">
+										<div>{get_user($nv[userid], 'name')}</div>
+										<div>借阅成功</div>
+										<div>{$nv[time]}</div>
+									</div>
+									{/if}
+								{/loop}
+
+								{/if}
+								<!-- <div class="need_man">
+									<div>戚凌云</div>
+									<div>请求借阅</div>
+									<div>2019-12-26 23:59:59</div>
+								</div> -->
+								
+							</div>
+
+							
+
+							<div class="add_note_line">
+								<i>
+									<span>当前使用者</span>
+									<span>{if $v[userid]}{get_user($v[userid], 'name')}{else}—{/if}</span>
+								</i>
+								<i>
+									<span>领用时间</span>
+									<span>{if $v[starttime]}{timetodate($v[starttime],5)}{else}—{/if}</span>
+								</i>
+								<i>
+									<span>编号</span>
+									<span>{if $v[bianhao]}{$v[bianhao]}{else}—{/if}</span>
+								</i>
+								<i>
+									<span>启用时间</span>
+									<span>{if $v[usingtime]}{$v[usingtime]}{else}—{/if}</span>
+								</i>
+								<i>
+									<span>型号</span>
+									<span>{if $v[xinghao]}{$v[xinghao]}{else}—{/if}</span>
+								</i>
+								<i>
+									<span>系统</span>
+									<span>{if $v[xitong]}{$v[xitong]}{else}—{/if}</span>
+								</i>
+							</div>
+							<div class="add_note_line">
+								<i>
+									<span>内存</span>
+									<span>{if $v[neicun]}{$v[neicun]}{else}—{/if}</span>
+								</i>
+								<i>
+									<span>版本</span>
+									<span>{if $v[banben]}{$v[banben]}{else}—{/if}</span>
+								</i>
+							</div>
+							<div class="add_note_line">
+								<em>备注</em>
+								<em>{if $v[note]}{$v[note]}{else}—{/if}</em>
+							</div>
+
+
+
+						</div>
+					</td>
+				</tr>
+
+
+
+			{/loop}
+		</tbody>
+	</table>
+	</form>
+	
+
+	<div class="edit-bottom-log"></div>
+</div>
+

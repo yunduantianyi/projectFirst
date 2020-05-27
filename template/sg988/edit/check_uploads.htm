@@ -1,0 +1,233 @@
+{template 'header'}
+<link rel="stylesheet" type="text/css" href="file/script/layui/css/layui.css">
+<script language="javascript" type="text/javascript" src="file/script/layui/layui.js"></script>
+
+<div class="content" style="overflow:scroll">
+
+<table class="none-table">   
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>{get_select('title','')}</td>
+			
+			<td><input type="text" class="form-control" name="code" value=""></td>
+			<td><input type="text" class="form-control" name="code" value=""></td>
+			<td><input type="text" class="form-control" name="code" value=""></td>
+			<td><input type="text" class="form-control" name="code" value=""></td>
+			<td><input type="text" class="form-control" name="code" value=""></td>
+			<td><input type="text" class="form-control" name="userid" value=""></td>
+			<td><input type="text" class="form-control" name="num" value=""></td>
+			<td>{get_select('status', '', '')}</td>
+			<td><input type="text" class="form-control" name="userid" value=""></td>
+			<td>
+				<textarea name="note" class="form-control" id="" cols="20" rows="2"></textarea>
+			</td>
+			<td><a href="javascript:;" onclick="$.Del_TR(this)" class="btn btn-danger">删除</a></td>
+		</tr>
+	</tbody>
+</table>
+
+
+<input type="hidden" name="fromtype" value="{$fromtype}">
+  	<div class="scroll check_uploads">
+		<form action="" id="form" method="post" class="layui-form">
+  		<table class="class_table"  >
+			<thead>
+				<tr style="font-size: 14px;">
+					<th style="width:50px">序号</th>
+					<th style="width:180px;">物品名称</th>
+					<th style="width:120px;">物品编号</th>
+					<th style="width:120px;">型号</th>
+					<th style="width:100px;">内存</th>
+					<th style="width:100px;">版本</th>
+					<th style="width:100px;">系统</th>
+					<th style="width:80px;">使用者</th>
+					<th style="width:80px;">物品数量</th>
+					<th style="width:100px;">物品状态</th>
+					<th style="width:100px;">启用时间</th>
+					<th >物品备注</th>
+					<th style="width:100px;">删除</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+
+				{loop $rowData $k $v}
+				{if trim($v[1])}
+				<tr>
+					<td>{$v[0]}</td>
+					<td>
+						{get_select('title', $v[1])}
+					</td>
+					
+					<td><input type="text" class="form-control" name="bianhao" value="{$v[2]}"></td>
+					<td><input type="text" class="form-control" name="xinghao" value="{$v[3]}"></td>
+					<td><input type="text" class="form-control" name="neicun" value="{$v[4]}"></td>
+					<td><input type="text" class="form-control" name="banben" value="{$v[5]}"></td>
+					<td><input type="text" class="form-control" name="xitong" value="{$v[6]}"></td>
+					<td><input type="text" class="form-control" name="userid" value="{$v[7]}"></td>
+					<td><input type="text" class="form-control" name="num" value="{$v[8]}"></td>
+					<td>{get_select('status', $v[9])}</td>
+					<td><input type="text" class="form-control" name="usingtime" value="{$v[10]}"></td>
+					<td>
+						<textarea name="note" class="form-control" id="" cols="20" rows="2">{$v[11]}</textarea>
+					</td>
+					<td><a href="javascript:;" onclick="$.Del_TR(this)" class="btn btn-danger">删除</a></td>
+				</tr>
+				{/if}
+				{/loop}
+			</tbody>
+		</table>
+		</form>
+		<div class="edit-bottom-kongbai"></div>
+  	</div>
+</div>
+<!-- <div class="doaction">
+	<div class="class_manage">
+		
+		<a href="javascript:;" class="btn btn-success ruku_add"><i class="layui-icon">&#xe608;</i>添加一行</a>
+		<a href="javascript:;" class="btn btn-danger ruku_del"><i class="layui-icon">&#xe640;</i>删除</a>
+		<a href="javascript:;" class="btn btn-info ruku_confirm"><i class="layui-icon">&#xe618;</i>确认添加</a>
+	</div>
+</div> -->
+
+<div class="do_wp_manage_2">
+	<i class="ruku_add">添加一行</i>
+	
+	<i class="ruku_confirm">确认添加</i>
+
+</div>
+
+
+
+
+{template 'footer'}
+<script>
+layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'element', 'form'], function(){
+  var 
+  table = layui.table //表格
+ ,element = layui.element //元素操作
+  ,form    =  layui.form;
+  
+
+
+
+  	$(".ruku_add").click(function(){
+		var last_number = $(".check_uploads tbody tr:last").find("td:nth-child(1)").html();
+		if( last_number == '' || last_number == undefined ){
+			last_number = 0;
+		}
+		var number = parseInt(last_number)+1;
+		console.log(number);
+		
+		$(".none-table tbody tr td:first-child").html(number);
+
+		var html = $(".none-table tbody").html();
+		$(".check_uploads tbody").append(html);
+
+	
+		form.render('select');
+
+	})
+
+  	$.Del_TR = function(obj){
+  		var $tr = $(obj).closest('tr');
+  		$tr.remove();
+  	}
+
+
+  	$(".ruku_confirm").click(function(){
+		var $arr = $(".check_uploads #form").serializeArray();        
+        if( $arr.length ){
+        	var select_val = "";
+        	var num_val = "";
+        	var xuhao1 = "";
+        	var xuhao2 = "";
+        	var num = "";
+        	var r = /^[0-9]*[1-9][0-9]*$/;　　//正整数 
+        	$(".class_table tbody tr").each(function(){
+        		select_val = $(this).find("select[name='title']").val();
+        		num_val = $(this).find("input[name='num']").val();
+        		if( (select_val == undefined) ||  (select_val=="")){
+        			xuhao1 += $(this).find("td:nth-child(1)").html()+"、";
+        		}
+        		// if( (num_val == undefined) ||  (num_val=="")){
+        		// 	xuhao2 += $(this).find("td:nth-child(1)").html()+"、";
+        		// }
+				if( !r.test(num_val) ){  //str为你要判断的字符 执行返回结果 true 或 false
+					xuhao2 += $(this).find("td:nth-child(1)").html()+"、";
+				}
+        	})
+        	if( xuhao1 || xuhao2 ){
+        		var tips = "";
+        		if( xuhao1 ){
+        			tips +="序号"+xuhao1+"未选择物品名称<br>";
+        		}
+        		if( xuhao2 ){
+        			tips += "序号"+xuhao2+"数量填写无效！";
+        		}
+        		layer.msg(tips,{icon:5});
+        		return false;
+        	}
+
+            var num_total = 0;
+            // $(".goods_add_table").find("input[name='num']").each(function(){
+            //     num_total += Number($(this).val());
+            // })
+            // if( num_total < 600 ){
+                layer.open({
+                    content: "是否确认添加数据？"
+                    ,btn: ['确认添加','取消']
+                    ,skin: 'footer'
+                    ,yes: function(index){
+
+                   layer.load();
+                    $.post(DTPath+'ajax.php', {"ac": "Edit", "func": "ajax_ruku_add","arr":$arr}, function( data ){
+                            var o = eval("("+data+")");
+                            if( o.code == 1 ){
+
+                                layer.msg(o.msg);
+                            	window.setTimeout(function () {
+                                	window.location.href=DTPath+"page.php?from=edit&ac=edit&fromtype=1";
+                                }, 2000);
+                            }else if( o.code == 2){  //未知错误
+                            	layer.msg(o.msg);
+                               
+                                window.setTimeout(function () {
+                                        window.location.reload();
+                                }, 2000);
+                            }else if( o.code == 3 ){
+                            	layer.closeAll();
+                                layer.open({
+                                    content: o.msg
+                                    ,btn: ['我知道了']
+                                    ,skin: 'footer'
+                                    ,yes: function(index){
+                                        // layer.close(index);    //取消
+                                        layer.closeAll();
+
+                                    }
+                                });
+                            }
+                    }); 
+                      layer.close(index);
+                    }
+                });
+
+            // }else{
+            //     layer.open({
+            //         content: '添加数量超过<span style="color:#f60">600</span>条限制，请分批处理！'
+            //         ,skin: 'msg'
+            //         ,time: 2  //1.5秒后自动关闭
+            //       });
+            //     return false;
+            // }
+        }else{
+           	layer.msg("请添加数据");
+            return false;
+        }
+	})
+
+
+});
+</script>

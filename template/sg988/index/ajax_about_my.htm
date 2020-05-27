@@ -1,0 +1,95 @@
+{template 'header'}
+<style>
+	.ajax_about_my .log img{
+		width: 30px;
+		height: 30px;
+	}
+</style>
+<div class="ajax_show_log ajax_about_my"  style="height:{$height}px;overflow: scroll;">
+	<input type="hidden" class="log_type" value="">
+	<input type="hidden" class="width" value="{$width}">
+	<div class="middle_bottom">
+		{loop $log $v}
+		<div class="log">
+			<span>
+			{if get_user($v['userid'],'avatar')}
+				<img src="{get_user($v['userid'],'avatar')}" alt="" class="my_avatar">
+			{else}
+				{getNickName(get_user($v[userid],'name'))}
+			{/if}
+
+			</span>
+			<span style="width:{$width}px;">
+				{if $v[status] == 1}
+					{get_user($v[userid],'name')} 入库物品
+				{elseif $v[status] == 13}
+					{get_user($v[userid],'name')} 入库分派给 {get_user($v[need_userid],'name')} 使用
+				{elseif $v[status] == 2}
+					{get_user($v[userid],'name')} 申请领用
+				{elseif $v[status] == 22}
+					{get_user($v[userid],'name')} <b>撤回</b>领用申请
+				{elseif $v[status] == 21}
+					{get_user($v[userid],'name')} <b>同意了</b> {get_user($v[need_userid],'name')} 的申请
+				{elseif $v[status] == 20}
+					{get_user($v[userid],'name')} <b>驳回了</b> {get_user($v[need_userid],'name')} 的申请
+				
+				{elseif $v[status] == 4}
+					{get_user($v[userid],'name')} <b>转让给</b> {get_user($v[need_userid],'name')}
+				{elseif $v[status] == 42}
+					{get_user($v[userid],'name')} <b>撤销转让</b>给 {get_user($v[need_userid],'name')}
+				{elseif $v[status] == 41}
+					{get_user($v[need_userid],'name')} 确认转让并接收
+				{elseif $v[status] == 40}
+					{get_user($v[need_userid],'name')} 拒绝接收转让
+				{elseif $v[status] == 6}
+					{get_user($v[userid],'name')} <b>归还了</b>物品
+				{elseif $v[status] == 61}
+					{get_user($v[userid],'name')} 将物品重新放回物品库
+				{elseif $v[status] == 62}
+					{get_user($v[userid],'name')} <b>撤回了</b>归还物品申请
+				{elseif $v[status] == 60}
+					{get_user($v[userid],'name')}  将物品设置为<b style="color:#ccc">已报废</b>
+				{elseif $v[status] == 7}
+					{get_user($v[userid],'name')} 将物品设置为<b style="color:#ccc">归还客户</b>
+				{elseif $v[status] == 8}
+					{get_user($v[userid],'name')} 将物品设为<b style="color:#f30">维修中</b>
+				{elseif $v[status] == 81}
+					{get_user($v[userid],'name')} <b style="color:#f30">完成维修</b>,重新放回物品库
+				{elseif $v[status] == 9}
+					{get_user($v[userid],'name')} 将物品设为<b style="color:#888">已报废</b>
+				{elseif $v[status] == 91}
+					{get_user($v[userid],'name')} <b style="color:#F60">请求借阅</b>图书
+				{elseif $v[status] == 0}
+					{get_user($v[userid],'name')}
+				{/if}
+			</span>
+			<span>{timetodate($v[time], 5)}</span>
+		</div>
+
+		
+		<div class="log_note">{get_goods(get_goods_belong($v[bid],'gid'),'title')}{if get_goods_belong($v[bid],'bianhao')} ( {get_goods_belong($v[bid],'bianhao')} ) {/if} </div>
+		{if $v[note]}
+		<div class="log_note">{$v[note]}</div>
+		{/if}
+		<div class="log_line"></div>
+		{/loop}
+
+
+
+
+	</div>
+	<div class="more_log"  onclick="$.Set_Log('0','more',this)" style="width: 95%;border:1px solid #ccc;border-radius:5px;margin:30px auto;height: 30px;line-height: 30px;">{if count($log) == 10 }加载更多{else}<span style="color:#ccc">没有更多了...</span>{/if}</div>
+
+
+	<div class="do_status_6">
+		<i onclick="$.Set_Log('2','apply',this)"><span>申请</span></i>
+		<i onclick="$.Set_Log('4','apply',this)"><span>转让</span></i>
+		<i onclick="$.Set_Log('6','apply',this)"><span>归还</span></i>
+		<i onclick="$.Set_Log('1','apply',this)"><span>入库</span></i>
+		<i onclick="$.Set_Log('8','apply',this)"><span>维修</span></i>
+		<i onclick="$.Set_Log('9','apply',this)"><span>借阅</span></i>
+	</div>
+
+
+	<div class="edit-bottom-log"></div>
+</div>
